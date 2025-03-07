@@ -1,0 +1,43 @@
+# Application properties with sensitive information
+**/application-*.properties
+**/application-*.yml
+**/application.properties
+**/application.yml
+
+# Environment variables
+.env
+.env.*
+
+# IDE configuration
+**/.vscode/
+**/.idea/
+
+# Compiled class files
+**/*.class
+
+# Logs
+**/*.log
+**/logs/
+
+# Database files
+**/*.db
+**/*.sqlite
+**/*.h2.db
+
+# Maven wrapper
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+# Package files
+**/*.jar
+**/*.war
+**/*.ear
+**/*.zip
+**/*.tar.gz
+**/*.rar
+
+# Security related files
+**/*.jks
+**/*.keystore
+**/*.key
+**/*.pem
