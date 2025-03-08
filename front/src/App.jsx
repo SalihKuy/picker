@@ -8,11 +8,13 @@ function App() {
   const [map, setMap] = useState("");
   const [brawlerStats, setBrawlerStats] = useState([]);
   const [sortType, setSortType] = useState("Pick Rate");
+  const [teamStats, setTeamStats] = useState([]);
 
   useEffect(() => {
     if (map === "") return;
 
-    const fetchData = async () => {
+
+    async function fetchData() {
       try {
 
         const response = await axios.post('http://localhost:8080/api/data/brawler', {
@@ -23,7 +25,21 @@ function App() {
 
         console.log('API Response:', response.data);
         setSortType("Pick Rate");
-        setBrawlerStats(response.data);
+        
+        const data = response.data;
+        const teamStats = [];
+        const individualStats = [];
+        
+        for (const item of data) {
+          if (item.brawlerName.includes("VS")) {
+            teamStats.push(item);
+          } else {
+            individualStats.push(item);
+          }
+        }
+        
+        setBrawlerStats(individualStats);
+        setTeamStats(teamStats);
       } catch (err) {
         console.error('Error fetching data:', err);
       }
@@ -683,6 +699,40 @@ function App() {
           <h2 style={{ marginBottom: "20px" }}>Brawler Statistics</h2>
           <button onClick={handleClick} style={{ paddingLeft: "50px", paddingRight: "50px", height: "50px", marginTop: "15px", backgroundColor: "#666666" }}>{"Sort By " + sortType}</button>
         </div>
+        {Array.isArray(teamStats) ? (
+          teamStats.length > 0 ? (
+            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "50px" }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: "left", padding: "8px", borderBottom: "2px solid #ddd" }}>Team</th>
+                  <th style={{ textAlign: "right", padding: "8px", borderBottom: "2px solid #ddd" }}>Win Rate</th>
+                  <th style={{ textAlign: "right", padding: "8px", borderBottom: "2px solid #ddd" }}>Matches</th>
+                </tr>
+              </thead>
+              <tbody>
+                {teamStats.map((team, index) => {
+                  const rowBackgroundColor = index % 2 === 0 ? "#444444" : "#666666";
+                  return (
+                    <tr key={`${team.brawlerName}-${team.matchCount}`} style={{ backgroundColor: rowBackgroundColor }}>
+                      <td style={{ padding: "8px", borderBottom: "1px solid #ddd" }}>{team.brawlerName}</td>
+                      <td style={{ textAlign: "right", padding: "8px", borderBottom: "1px solid #ddd" }}>
+                        {(team.winRate * 100).toFixed(1)}%
+                      </td>
+                      <td style={{ textAlign: "right", padding: "8px", borderBottom: "1px solid #ddd" }}>
+                        {team.matchCount}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          ) : (
+            <p>No team statistics available for this map.</p>
+          )
+        ) : (
+          <p>Select a map to view brawler statistics.</p>
+        )}
+
         {Array.isArray(brawlerStats) ? (
           brawlerStats.length > 0 ? (
             <table style={{ width: "100%", borderCollapse: "collapse" }}>

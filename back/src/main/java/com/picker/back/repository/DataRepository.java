@@ -30,4 +30,22 @@ public interface DataRepository extends JpaRepository<DataEntity, Long> {
             @Param("map") String map,
             @Param("brawler1") String brawler1,
             @Param("brawler2") String brawler2);
+
+    @Query("SELECT d FROM DataEntity d " +
+            "WHERE d.map = :map " +
+            "AND ((" +
+            "(d.redBrawler1 = :redBrawler1 OR d.redBrawler2 = :redBrawler1 OR d.redBrawler3 = :redBrawler1) AND " +
+            "(d.redBrawler1 = :redBrawler2 OR d.redBrawler2 = :redBrawler2 OR d.redBrawler3 = :redBrawler2) AND " +
+            "(d.blueBrawler1 = :blueBrawler OR d.blueBrawler2 = :blueBrawler OR d.blueBrawler3 = :blueBrawler)" +
+            ") OR (" +
+            "(d.blueBrawler1 = :redBrawler1 OR d.blueBrawler2 = :redBrawler1 OR d.blueBrawler3 = :redBrawler1) AND " +
+            "(d.blueBrawler1 = :redBrawler2 OR d.blueBrawler2 = :redBrawler2 OR d.blueBrawler3 = :redBrawler2) AND " +
+            "(d.redBrawler1 = :blueBrawler OR d.redBrawler2 = :blueBrawler OR d.redBrawler3 = :blueBrawler)" +
+            "))")
+    List<DataEntity> findBy2Red1BlueAndMap(
+            @Param("map") String map,
+            @Param("redBrawler1") String redBrawler1,
+            @Param("redBrawler2") String redBrawler2,
+            @Param("blueBrawler") String blueBrawler);
+
 }

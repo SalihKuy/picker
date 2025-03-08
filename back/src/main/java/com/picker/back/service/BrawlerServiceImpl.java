@@ -47,9 +47,8 @@ public class BrawlerServiceImpl implements BrawlerService {
                 redBrawlers != null && countNonEmptyStrings(redBrawlers) == 2) {
             logger.info("2 red, 1 blue request detected, delegating to handle2Red1Blue");
             List<String> nonEmptyRedBrawlers = redBrawlers.stream().filter(b -> b != null && !b.isEmpty()).toList();
-            return handle2Red1Blue(map, nonEmptyRedBrawlers.get(0), nonEmptyRedBrawlers.get(1));
+            return handle2Red1Blue(map, nonEmptyRedBrawlers.get(0), nonEmptyRedBrawlers.get(1), blueBrawlers.get(0));
         }
-
 
         logger.info("Full team composition request detected, returning default result for now");
         return List.of(new BrawlerStatsDTO("Brawler 1", 0.0, 0));
@@ -106,7 +105,7 @@ public class BrawlerServiceImpl implements BrawlerService {
         return result;
     }
 
-    public List<BrawlerStatsDTO> handle2Red1Blue(String map, String brawler1, String brawler2) {
+    public List<BrawlerStatsDTO> handle2Red1Blue(String map, String brawler1, String brawler2, String brawler3) {
         logger.info("handleMapOnly called for map: {}", map);
 
         List<DataEntity> battles = dataRepository.findByTwoRedAndMap(map, brawler1, brawler2);
@@ -124,6 +123,28 @@ public class BrawlerServiceImpl implements BrawlerService {
             processBrawler(brawlerStats, battle.getRedBrawler1(), false, battle.getIsTwoOh());
             processBrawler(brawlerStats, battle.getRedBrawler2(), false, battle.getIsTwoOh());
             processBrawler(brawlerStats, battle.getRedBrawler3(), false, battle.getIsTwoOh());
+        }
+
+        List<DataEntity> newBattles = dataRepository.findBy2Red1BlueAndMap(map, brawler1, brawler2, brawler3);
+        logger.info("Found {} battles for map: {}", newBattles.size(), map);
+        for (DataEntity battle : newBattles) {
+            logger.trace("Processing battle with ID: {}", battle.getId());
+
+            boolean redHasBothTargetBrawlers = (battle.getRedBrawler1().equals(brawler1)
+                    || battle.getRedBrawler2().equals(brawler1) || battle.getRedBrawler3().equals(brawler1)) &&
+                    (battle.getRedBrawler1().equals(brawler2) || battle.getRedBrawler2().equals(brawler2)
+                            || battle.getRedBrawler3().equals(brawler2));
+
+            if (redHasBothTargetBrawlers) {
+                String team = battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " "
+                        + battle.getBlueBrawler3() + " VS " + battle.getRedBrawler1() + " " + battle.getRedBrawler2()
+                        + " " + battle.getRedBrawler3();
+                processBrawler(brawlerStats, team, true, battle.getIsTwoOh());
+            } else {
+                String team = battle.getRedBrawler1() + " " + battle.getRedBrawler2() + " " + battle.getRedBrawler3() + " VS "
+                        + battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " " + battle.getBlueBrawler3();
+                processBrawler(brawlerStats, team, false, battle.getIsTwoOh());
+            }
         }
 
         brawlerStats.remove(brawler1);
