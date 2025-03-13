@@ -7,8 +7,14 @@ function App() {
   const [redBrawlers, setRedBrawlers] = useState(["", "", ""]);
   const [map, setMap] = useState("");
   const [brawlerStats, setBrawlerStats] = useState([]);
+  const [filteredStats, setFilteredStats] = useState([]);
   const [sortType, setSortType] = useState("Pick Rate");
   const [teamStats, setTeamStats] = useState([]);
+  const [filterValue, setFilterValue] = useState("");
+  const [showType, setShowType] = useState("Teams");
+  const [isNoMap , setIsNoMap] = useState(false);
+  const [isNoBrawler , setIsNoBrawler] = useState(false);
+
 
   useEffect(() => {
     if (map === "") return;
@@ -25,11 +31,11 @@ function App() {
 
         console.log('API Response:', response.data);
         setSortType("Pick Rate");
-        
+
         const data = response.data;
         const teamStats = [];
         const individualStats = [];
-        
+
         for (const item of data) {
           if (item.brawlerName.includes("VS")) {
             teamStats.push(item);
@@ -37,8 +43,9 @@ function App() {
             individualStats.push(item);
           }
         }
-        
+
         setBrawlerStats(individualStats);
+        setFilteredStats(individualStats);
         setTeamStats(teamStats);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -64,20 +71,53 @@ function App() {
 
   function handleMapChange(event) {
     setMap(event.target.value);
+    setBlueBrawlers(["", "", ""]);
+    setRedBrawlers(["", "", ""]);
     console.log(event.target.value);
   }
 
-  function handleClick() {
+  function handleSortClick() {
     const newSortType = sortType === "Pick Rate" ? "Win Rate" : "Pick Rate";
     setSortType(newSortType);
-    const sortedStats = [...brawlerStats].sort((a, b) => {
+    const sortedStats = [...filteredStats].sort((a, b) => {
       if (newSortType === "Win Rate") {
         return b.matchCount - a.matchCount;
       } else {
         return b.winRate - a.winRate;
       }
     });
-    setBrawlerStats(sortedStats);
+    setFilteredStats(sortedStats);
+    const sortedTeams = [...teamStats].sort((a, b) => {
+      if (newSortType === "Win Rate") {
+        return b.matchCount - a.matchCount;
+      } else {
+        return b.winRate - a.winRate;
+      }
+    });
+    setTeamStats(sortedTeams);
+  }
+
+  function handleShowClick() {
+    const newShowType = showType === "Brawlers" ? "Teams" : "Brawlers";
+    setShowType(newShowType);
+  }
+
+  function handleBrawlerClick() {
+    const newBrawlerType = isNoBrawler ? false : true;
+    setIsNoBrawler(newBrawlerType);
+  }
+
+  function handleMapClick() {
+    const newMapType = isNoMap ? false : true;
+    setIsNoMap(newMapType);
+  }
+
+  function handleFilter(event) {
+    setFilterValue(event.target.value);
+    const x = brawlerStats.filter((brawler) => {
+      return brawler.matchCount >= event.target.value;
+    });
+    setFilteredStats(x);
   }
 
   return (
@@ -170,6 +210,7 @@ function App() {
               <option value="EMZ">Emz</option>
               <option value="EVE">Eve</option>
               <option value="FANG">Fang</option>
+              <option value="FINX">Finx</option>
               <option value="FRANK">Frank</option>
               <option value="GALE">Gale</option>
               <option value="GENE">Gene</option>
@@ -189,6 +230,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
               <option value="MEG">Meg</option>
@@ -228,7 +270,7 @@ function App() {
           <div style={{ "flex": "1" }}>
             <label htmlFor="blueBrawler1">Blue Brawler 2: </label>
             <select id="blueBrawler1" value={blueBrawlers[1]} onChange={(e) => handleBlueChange(e, 1)} style={{ padding: "8px", borderRadius: "4px" }}>
-            <option value="">Select a Brawler</option>
+              <option value="">Select a Brawler</option>
               <option value="8-BIT">8-Bit</option>
               <option value="AMBER">Amber</option>
               <option value="ANGELO">Angelo</option>
@@ -263,6 +305,7 @@ function App() {
               <option value="EMZ">Emz</option>
               <option value="EVE">Eve</option>
               <option value="FANG">Fang</option>
+              <option value="FINX">Finx</option>
               <option value="FRANK">Frank</option>
               <option value="GALE">Gale</option>
               <option value="GENE">Gene</option>
@@ -282,6 +325,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
               <option value="MEG">Meg</option>
@@ -321,7 +365,7 @@ function App() {
           <div style={{ "flex": "1" }}>
             <label htmlFor="blueBrawler2">Blue Brawler 3: </label>
             <select id="blueBrawler2" value={blueBrawlers[2]} onChange={(e) => handleBlueChange(e, 2)} style={{ padding: "8px", borderRadius: "4px" }}>
-            <option value="">Select a Brawler</option>
+              <option value="">Select a Brawler</option>
               <option value="8-BIT">8-Bit</option>
               <option value="AMBER">Amber</option>
               <option value="ANGELO">Angelo</option>
@@ -356,6 +400,7 @@ function App() {
               <option value="EMZ">Emz</option>
               <option value="EVE">Eve</option>
               <option value="FANG">Fang</option>
+              <option value="FINX">Finx</option>
               <option value="FRANK">Frank</option>
               <option value="GALE">Gale</option>
               <option value="GENE">Gene</option>
@@ -375,6 +420,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
               <option value="MEG">Meg</option>
@@ -416,7 +462,7 @@ function App() {
           <div style={{ "flex": "1" }}>
             <label htmlFor="redBrawler0">Red Brawler 1: </label>
             <select id="redBrawler0" value={redBrawlers[0]} onChange={(e) => handleRedChange(e, 0)} style={{ padding: "8px", borderRadius: "4px" }}>
-            <option value="">Select a Brawler</option>
+              <option value="">Select a Brawler</option>
               <option value="8-BIT">8-Bit</option>
               <option value="AMBER">Amber</option>
               <option value="ANGELO">Angelo</option>
@@ -451,6 +497,7 @@ function App() {
               <option value="EMZ">Emz</option>
               <option value="EVE">Eve</option>
               <option value="FANG">Fang</option>
+              <option value="FINX">Finx</option>
               <option value="FRANK">Frank</option>
               <option value="GALE">Gale</option>
               <option value="GENE">Gene</option>
@@ -470,6 +517,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
               <option value="MEG">Meg</option>
@@ -509,7 +557,7 @@ function App() {
           <div style={{ "flex": "1" }}>
             <label htmlFor="redBrawler1">Red Brawler 2: </label>
             <select id="redBrawler1" value={redBrawlers[1]} onChange={(e) => handleRedChange(e, 1)} style={{ padding: "8px", borderRadius: "4px" }}>
-            <option value="">Select a Brawler</option>
+              <option value="">Select a Brawler</option>
               <option value="8-BIT">8-Bit</option>
               <option value="AMBER">Amber</option>
               <option value="ANGELO">Angelo</option>
@@ -544,6 +592,7 @@ function App() {
               <option value="EMZ">Emz</option>
               <option value="EVE">Eve</option>
               <option value="FANG">Fang</option>
+              <option value="FINX">Finx</option>
               <option value="FRANK">Frank</option>
               <option value="GALE">Gale</option>
               <option value="GENE">Gene</option>
@@ -563,6 +612,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
               <option value="MEG">Meg</option>
@@ -602,7 +652,7 @@ function App() {
           <div style={{ "flex": "1" }}>
             <label htmlFor="redBrawler2">Red Brawler 3: </label>
             <select id="redBrawler2" value={redBrawlers[2]} onChange={(e) => handleRedChange(e, 2)} style={{ padding: "8px", borderRadius: "4px" }}>
-            <option value="">Select a Brawler</option>
+              <option value="">Select a Brawler</option>
               <option value="8-BIT">8-Bit</option>
               <option value="AMBER">Amber</option>
               <option value="ANGELO">Angelo</option>
@@ -637,6 +687,7 @@ function App() {
               <option value="EMZ">Emz</option>
               <option value="EVE">Eve</option>
               <option value="FANG">Fang</option>
+              <option value="FINX">Finx</option>
               <option value="FRANK">Frank</option>
               <option value="GALE">Gale</option>
               <option value="GENE">Gene</option>
@@ -656,6 +707,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
               <option value="MEG">Meg</option>
@@ -695,12 +747,22 @@ function App() {
         </div>
       </div>
       <div style={{ backgroundColor: "#222222", height: "100%", width: "100%", flex: "1", padding: "20px", overflow: "auto" }}>
-        <div style={{ display: "flex", gap: "200px" }}>
-          <h2 style={{ marginBottom: "20px" }}>Brawler Statistics</h2>
-          <button onClick={handleClick} style={{ paddingLeft: "50px", paddingRight: "50px", height: "50px", marginTop: "15px", backgroundColor: "#666666" }}>{"Sort By " + sortType}</button>
+        <div style={{ display: "flex", gap: "30px" }}>
+          <h3 style={{ marginBottom: "20px" }}>Brawler Statistics</h3>
+          <button onClick={handleSortClick} style={{ paddingLeft: "40px", paddingRight: "40px", height: "40px", marginTop: "15px", backgroundColor: "#666666" }}>{"Sort By " + sortType}</button>
+          <button onClick={handleShowClick} style={{marginLeft:"10px", paddingLeft: "40px", paddingRight: "40px", height: "40px", marginTop: "15px", backgroundColor: "#666666" }}>{"See " + showType}</button>
+        </div>
+        <div style={{ display: "flex", gap:"30px" }}>
+            <form onSubmit={(e) => {e.preventDefault()}} style={{ display: "flex" }}>
+              <div style={{ display: "flex", border: "1px solid black", borderRadius: "10px", boxSizing: "border-box" }}>
+                <input type="number" style={{ width: "10vw", height: "40px", borderRadius: "8px", boxSizing: "border-box", border: "1px solid white" }} onChange={(e) => handleFilter(e)} value={filterValue} placeholder="Filter by match count" />
+              </div>
+            </form>
+            <button onClick={handleBrawlerClick} style={{width:"240px", height: "60px", backgroundColor: "#666666" }}>{isNoBrawler ? "Show winrates against selected red brawlers" : "Show map winrates"}</button>
+            <button onClick={handleMapClick} style={{ paddingLeft: "10px", paddingRight: "10px", height: "60px", backgroundColor: "#666666" }}>{isNoMap ? "Show map specific" : "Make map agnostic"}</button>
         </div>
         {Array.isArray(teamStats) ? (
-          teamStats.length > 0 ? (
+          teamStats.length > 0 && showType == "Brawlers" ? (
             <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "50px" }}>
               <thead>
                 <tr>
@@ -727,14 +789,14 @@ function App() {
               </tbody>
             </table>
           ) : (
-            <p>No team statistics available for this map.</p>
+            <p></p>
           )
         ) : (
           <p>Select a map to view brawler statistics.</p>
         )}
 
-        {Array.isArray(brawlerStats) ? (
-          brawlerStats.length > 0 ? (
+        {Array.isArray(filteredStats) ? (
+          filteredStats.length > 0 && showType == "Teams" ? (
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr>
@@ -744,7 +806,7 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {brawlerStats.map((brawler, index) => {
+                {filteredStats.map((brawler, index) => {
                   const rowBackgroundColor = index % 2 === 0 ? "#444444" : "#666666";
                   return (
                     <tr key={`${brawler.brawlerName}-${brawler.matchCount}`} style={{ backgroundColor: rowBackgroundColor }}>
@@ -761,7 +823,7 @@ function App() {
               </tbody>
             </table>
           ) : (
-            <p>No brawler statistics available for this map.</p>
+            showType === "Brawlers" ? <p></p> : <p>No brawler statistics available for this map.</p>
           )
         ) : (
           <p>Select a map to view brawler statistics.</p>

@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "api.external",
+      "type": "com.picker.back.config.ApiProperties",
+      "sourceType": "com.picker.back.config.ApiProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "api.external.api-key",
+      "type": "java.lang.String",
+      "sourceType": "com.picker.back.config.ApiProperties"
+    },
+    {
+      "name": "api.external.base-url",
+      "type": "java.lang.String",
+      "sourceType": "com.picker.back.config.ApiProperties"
+    },
+    {
+      "name": "api.external.max-retries",
+      "type": "java.lang.Integer",
+      "sourceType": "com.picker.back.config.ApiProperties"
+    }
+  ],
+  "hints": []
+}
