@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "data_entity2")
+@Table(name = "data_entity3")
 public class DataEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

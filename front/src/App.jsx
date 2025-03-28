@@ -8,12 +8,12 @@ function App() {
   const [map, setMap] = useState("");
   const [brawlerStats, setBrawlerStats] = useState([]);
   const [filteredStats, setFilteredStats] = useState([]);
-  const [sortType, setSortType] = useState("Pick Rate");
+  const [sortType, setSortType] = useState("Win Rate");
   const [teamStats, setTeamStats] = useState([]);
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState(25);
   const [showType, setShowType] = useState("Teams");
-  const [isNoMap , setIsNoMap] = useState(false);
-  const [isNoBrawler , setIsNoBrawler] = useState(false);
+  const [isNoMap, setIsNoMap] = useState(false);
+  const [isNoBrawler, setIsNoBrawler] = useState(false);
 
 
   useEffect(() => {
@@ -30,7 +30,6 @@ function App() {
         });
 
         console.log('API Response:', response.data);
-        setSortType("Pick Rate");
 
         const data = response.data;
         const teamStats = [];
@@ -44,8 +43,12 @@ function App() {
           }
         }
 
-        setBrawlerStats(individualStats);
-        setFilteredStats(individualStats);
+        const sortedStats = [...individualStats].sort((a, b) => {
+          return b.matchCount - a.matchCount;
+        });
+        setBrawlerStats(sortedStats);
+        setFilteredStats(sortedStats);
+        setSortType("Win Rate");
         setTeamStats(teamStats);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -113,6 +116,7 @@ function App() {
   }
 
   function handleFilter(event) {
+    event.preventDefault();
     setFilterValue(event.target.value);
     const x = brawlerStats.filter((brawler) => {
       return brawler.matchCount >= event.target.value;
@@ -750,16 +754,16 @@ function App() {
         <div style={{ display: "flex", gap: "30px" }}>
           <h3 style={{ marginBottom: "20px" }}>Brawler Statistics</h3>
           <button onClick={handleSortClick} style={{ paddingLeft: "40px", paddingRight: "40px", height: "40px", marginTop: "15px", backgroundColor: "#666666" }}>{"Sort By " + sortType}</button>
-          <button onClick={handleShowClick} style={{marginLeft:"10px", paddingLeft: "40px", paddingRight: "40px", height: "40px", marginTop: "15px", backgroundColor: "#666666" }}>{"See " + showType}</button>
+          <button onClick={handleShowClick} style={{ marginLeft: "10px", paddingLeft: "40px", paddingRight: "40px", height: "40px", marginTop: "15px", backgroundColor: "#666666" }}>{"See " + showType}</button>
         </div>
-        <div style={{ display: "flex", gap:"30px" }}>
-            <form onSubmit={(e) => {e.preventDefault()}} style={{ display: "flex" }}>
-              <div style={{ display: "flex", border: "1px solid black", borderRadius: "10px", boxSizing: "border-box" }}>
-                <input type="number" style={{ width: "10vw", height: "40px", borderRadius: "8px", boxSizing: "border-box", border: "1px solid white" }} onChange={(e) => handleFilter(e)} value={filterValue} placeholder="Filter by match count" />
-              </div>
-            </form>
-            <button onClick={handleBrawlerClick} style={{width:"240px", height: "60px", backgroundColor: "#666666" }}>{isNoBrawler ? "Show winrates against selected red brawlers" : "Show map winrates"}</button>
-            <button onClick={handleMapClick} style={{ paddingLeft: "10px", paddingRight: "10px", height: "60px", backgroundColor: "#666666" }}>{isNoMap ? "Show map specific" : "Make map agnostic"}</button>
+        <div style={{ display: "flex", gap: "30px" }}>
+          <form onSubmit={(e) => { e.preventDefault() }} style={{ display: "flex" }}>
+            <div style={{ display: "flex", border: "1px solid black", borderRadius: "10px", boxSizing: "border-box" }}>
+              <input type="number" style={{ width: "10vw", height: "40px", borderRadius: "8px", boxSizing: "border-box", border: "1px solid white" }} onChange={(e) => handleFilter(e)} value={filterValue} placeholder="Filter by match count" />
+            </div>
+          </form>
+          <button onClick={handleBrawlerClick} style={{ width: "240px", height: "60px", backgroundColor: "#666666" }}>{isNoBrawler ? "Show winrates against selected red brawlers" : "Show map winrates"}</button>
+          <button onClick={handleMapClick} style={{ paddingLeft: "10px", paddingRight: "10px", height: "60px", backgroundColor: "#666666" }}>{isNoMap ? "Show map specific" : "Make map agnostic"}</button>
         </div>
         {Array.isArray(teamStats) ? (
           teamStats.length > 0 && showType == "Brawlers" ? (

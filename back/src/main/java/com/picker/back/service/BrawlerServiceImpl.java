@@ -19,7 +19,6 @@ public class BrawlerServiceImpl implements BrawlerService {
 
     private DataRepository dataRepository;
     private static final Logger logger = LoggerFactory.getLogger(BrawlerServiceImpl.class);
-    private static final int MIN_MATCH_COUNT = 25;
 
     public BrawlerServiceImpl(DataRepository dataRepository) {
         this.dataRepository = dataRepository;
@@ -105,15 +104,6 @@ public class BrawlerServiceImpl implements BrawlerService {
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
         List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
-                .filter(entry -> {
-                    int total = entry.getValue()[1];
-                    boolean hasEnoughMatches = total >= MIN_MATCH_COUNT;
-                    if (!hasEnoughMatches) {
-                        logger.debug("Filtered out brawler {} with only {} matches (minimum required: {})",
-                                entry.getKey(), total, MIN_MATCH_COUNT);
-                    }
-                    return hasEnoughMatches;
-                })
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -128,8 +118,6 @@ public class BrawlerServiceImpl implements BrawlerService {
                 })
                 .sorted(Comparator.comparing(BrawlerStatsDTO::getWinRate).reversed()).toList();
 
-        logger.info("Returning {} brawler statistics after filtering (minimum {} matches required)",
-                result.size(), MIN_MATCH_COUNT);
         return result;
     }
 
@@ -157,15 +145,6 @@ public class BrawlerServiceImpl implements BrawlerService {
         brawlerStats.remove(brawler1);
 
         List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
-                .filter(entry -> {
-                    int total = entry.getValue()[1];
-                    boolean hasEnoughMatches = total >= 5;
-                    if (!hasEnoughMatches) {
-                        logger.debug("Filtered out brawler {} with only {} matches (minimum required: {})",
-                                entry.getKey(), total, 5);
-                    }
-                    return hasEnoughMatches;
-                })
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -180,8 +159,6 @@ public class BrawlerServiceImpl implements BrawlerService {
                 })
                 .sorted(Comparator.comparing(BrawlerStatsDTO::getWinRate).reversed()).toList();
 
-        logger.info("Returning {} brawler statistics after filtering (minimum {} matches required)",
-                result.size(), MIN_MATCH_COUNT);
         return result;
     }
 
@@ -256,8 +233,6 @@ public class BrawlerServiceImpl implements BrawlerService {
                 })
                 .sorted(Comparator.comparing(BrawlerStatsDTO::getWinRate).reversed()).toList();
 
-        logger.info("Returning {} brawler statistics after filtering (minimum {} matches required)",
-                result.size(), MIN_MATCH_COUNT);
         return result;
     }
 
@@ -324,8 +299,6 @@ public class BrawlerServiceImpl implements BrawlerService {
                 })
                 .sorted(Comparator.comparing(BrawlerStatsDTO::getWinRate).reversed()).toList();
 
-        logger.info("Returning {} brawler statistics after filtering (minimum {} matches required)",
-                result.size(), MIN_MATCH_COUNT);
         return result;
     }
 
@@ -393,8 +366,6 @@ public class BrawlerServiceImpl implements BrawlerService {
                 })
                 .sorted(Comparator.comparing(BrawlerStatsDTO::getWinRate).reversed()).toList();
 
-        logger.info("Returning {} brawler statistics after filtering (minimum {} matches required)",
-                result.size(), MIN_MATCH_COUNT);
         return result;
     }
 
@@ -464,8 +435,6 @@ public class BrawlerServiceImpl implements BrawlerService {
                 })
                 .sorted(Comparator.comparing(BrawlerStatsDTO::getWinRate).reversed()).toList();
 
-        logger.info("Returning {} brawler statistics after filtering (minimum {} matches required)",
-                result.size(), MIN_MATCH_COUNT);
         return result;
     }
 
@@ -482,7 +451,7 @@ public class BrawlerServiceImpl implements BrawlerService {
             stats[0] += 2;
             logger.trace("Added win for brawler: {}", brawler);
         } else {
-            if (isTwoOh) {
+            if (!isTwoOh) {
                 stats[0] += 1;
             }
             logger.trace("Added loss for brawler: {}", brawler);
