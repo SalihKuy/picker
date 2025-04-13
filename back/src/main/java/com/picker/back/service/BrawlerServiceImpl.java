@@ -36,6 +36,12 @@ public class BrawlerServiceImpl implements BrawlerService {
         logger.debug("Processing map: {}", map);
         logger.debug("Blue brawlers: {}", blueBrawlers);
         logger.debug("Red brawlers: {}", redBrawlers);
+        logger.debug("No map: {}", brawlerRequestDTO.isNoMap());
+
+        if(brawlerRequestDTO.isNoMap()) {
+            logger.info("Map-agnostic request detected, returning handleNothing");
+            return handleNothing();
+        }
 
         if (map != null && !map.isEmpty() &&
                 (blueBrawlers == null || areAllEmpty(blueBrawlers)) &&
@@ -79,6 +85,46 @@ public class BrawlerServiceImpl implements BrawlerService {
 
         logger.info("Full team composition request detected, returning default result for now");
         return List.of(new BrawlerStatsDTO("Brawler 1", 0.0, 0));
+    }
+
+    public List<BrawlerStatsDTO> handleNothing() {
+        logger.info("handleNothing called");
+
+        List<DataEntity> battles = dataRepository.findAll();
+        logger.info("Found {} battles", battles.size());
+
+        Map<String, int[]> brawlerStats = new HashMap<>();
+
+        logger.debug("Processing {} battles", battles.size());
+        for (DataEntity battle : battles) {
+            logger.trace("Processing battle with ID: {}", battle.getId());
+            processBrawler(brawlerStats, battle.getBlueBrawler1(), true, battle.getIsTwoOh());
+            processBrawler(brawlerStats, battle.getBlueBrawler2(), true, battle.getIsTwoOh());
+            processBrawler(brawlerStats, battle.getBlueBrawler3(), true, battle.getIsTwoOh());
+
+            processBrawler(brawlerStats, battle.getRedBrawler1(), false, battle.getIsTwoOh());
+            processBrawler(brawlerStats, battle.getRedBrawler2(), false, battle.getIsTwoOh());
+            processBrawler(brawlerStats, battle.getRedBrawler3(), false, battle.getIsTwoOh());
+        }
+
+        logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
+
+        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+                .map(entry -> {
+                    String brawler = entry.getKey();
+                    int[] stats = entry.getValue();
+                    int wins = stats[0];
+                    int total = stats[1];
+                    double winRate = total > 0 ? (double) wins / total : 0.0;
+
+                    logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
+                            brawler, wins, total, winRate);
+
+                    return new BrawlerStatsDTO(brawler, winRate, total);
+                })
+                .sorted(Comparator.comparing(BrawlerStatsDTO::getWinRate).reversed()).toList();
+
+        return result;
     }
 
     public List<BrawlerStatsDTO> handleMapOnly(String map) {

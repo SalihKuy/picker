@@ -15,6 +15,8 @@ import java.util.List;
 public interface DataRepository extends JpaRepository<DataEntity, Long> {
     Optional<DataEntity> findByBattleTime(OffsetDateTime battleTime);
 
+    List<DataEntity> findAll();
+
     List<DataEntity> findByMap(String map);
 
     @Query("SELECT d FROM DataEntity d " +

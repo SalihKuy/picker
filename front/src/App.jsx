@@ -17,16 +17,15 @@ function App() {
 
 
   useEffect(() => {
-    if (map === "") return;
-
 
     async function fetchData() {
+      console.log("Fetching data...");
       try {
-
         const response = await axios.post('http://localhost:8080/api/data/brawler', {
           map: map,
           blueBrawlers: blueBrawlers,
-          redBrawlers: redBrawlers
+          redBrawlers: redBrawlers,
+          isNoMap: isNoMap,
         });
 
         console.log('API Response:', response.data);
@@ -56,7 +55,7 @@ function App() {
     };
 
     fetchData();
-  }, [map, blueBrawlers, redBrawlers]);
+  },[map, blueBrawlers, redBrawlers, isNoMap]);
 
   function handleBlueChange(event, index) {
     let newBlueBrawlers = [...blueBrawlers];
@@ -111,8 +110,7 @@ function App() {
   }
 
   function handleMapClick() {
-    const newMapType = isNoMap ? false : true;
-    setIsNoMap(newMapType);
+    setIsNoMap(prevState => !prevState);
   }
 
   function handleFilter(event) {
@@ -234,6 +232,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="LUMI">Lumi</option>
               <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
@@ -329,6 +328,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="LUMI">Lumi</option>
               <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
@@ -424,6 +424,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="LUMI">Lumi</option>
               <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
@@ -521,6 +522,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="LUMI">Lumi</option>
               <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
@@ -616,6 +618,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="LUMI">Lumi</option>
               <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>
@@ -711,6 +714,7 @@ function App() {
               <option value="LILY">Lily</option>
               <option value="LOLA">Lola</option>
               <option value="LOU">Lou</option>
+              <option value="LUMI">Lumi</option>
               <option value="MAISIE">Maisie</option>
               <option value="MANDY">Mandy</option>
               <option value="MAX">Max</option>

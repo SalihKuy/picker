@@ -23,12 +23,14 @@ public class DataEntity {
     private String redBrawler3;
     private Boolean isTwoOh;
     private OffsetDateTime battleTime;
+    private Integer trophies;
+    private String tag; 
 
     public DataEntity() {}
 
     public DataEntity(String map, String mode, String blueBrawler1, String blueBrawler2, String blueBrawler3, 
                       String redBrawler1, String redBrawler2, String redBrawler3, Boolean isTwoOh, 
-                      OffsetDateTime battleTime) {
+                      OffsetDateTime battleTime, int trophies, String tag) {
         this.map = map;
         this.mode = mode;
         this.blueBrawler1 = blueBrawler1;
@@ -39,6 +41,8 @@ public class DataEntity {
         this.redBrawler3 = redBrawler3;
         this.isTwoOh = isTwoOh;
         this.battleTime = battleTime;
+        this.trophies = trophies;
+        this.tag = tag;
     }
 
     public Long getId() { 
@@ -127,5 +131,17 @@ public class DataEntity {
     
     public void setBattleTime(OffsetDateTime battleTime) { 
         this.battleTime = battleTime; 
+    }
+    public int getTrophies() { 
+        return trophies; 
+    }
+    public void setTrophies(int trophies) { 
+        this.trophies = trophies; 
+    }
+    public String getTag() { 
+        return tag; 
+    }
+    public void setTag(String tag) { 
+        this.tag = tag; 
     }
 }
