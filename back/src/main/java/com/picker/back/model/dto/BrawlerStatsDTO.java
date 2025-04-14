@@ -4,6 +4,7 @@ public class BrawlerStatsDTO {
     private String brawlerName;
     private double winRate;
     private int matchCount;
+    private int trophies;
     
     public BrawlerStatsDTO(String brawlerName, double winRate, int matchCount) {
         this.brawlerName = brawlerName;
@@ -33,5 +34,11 @@ public class BrawlerStatsDTO {
     
     public void setMatchCount(int matchCount) {
         this.matchCount = matchCount;
+    }
+    public int getTrophies() {
+        return trophies;
+    }
+    public void setTrophies(int trophies) {
+        this.trophies = trophies;
     }
 }

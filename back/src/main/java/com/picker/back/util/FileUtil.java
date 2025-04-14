@@ -52,12 +52,8 @@ public class FileUtil {
             }
         }
 
-        System.out.println("Writing to source path: " + sourcePath);
-        System.out.println("Writing to target path: " + targetPath);
-
         for (Path path : Arrays.asList(sourcePath, targetPath)) {
             if (path == null || !Files.exists(path)) {
-                System.out.println("Skipping path (doesn't exist): " + path);
                 continue;
             }
 
@@ -76,7 +72,6 @@ public class FileUtil {
                 for (String tag : tags) {
                     writer.write(tag + "\n");
                 }
-                System.out.println("Successfully wrote to path: " + path);
             }
         }
     }
