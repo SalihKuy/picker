@@ -16,8 +16,6 @@ com/picker/back/model/entity/DataEntity.class
 com/picker/back/service/DataServiceImpl.class
 com/picker/back/model/dto/ApiResponseDTO$Player.class
 com/picker/back/MyprojectApplication.class
-com/picker/back/model/dto/BrawlerStatsDTO.class
 com/picker/back/service/ApiServiceImpl.class
-com/picker/back/service/BrawlerServiceImpl.class
 com/picker/back/model/dto/ApiResponseDTO$Brawler.class
 com/picker/back/repository/DataRepository.class

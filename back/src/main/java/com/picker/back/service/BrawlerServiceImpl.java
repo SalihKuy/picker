@@ -5,8 +5,9 @@ import java.util.Map;
 import java.util.HashMap;
 import org.springframework.stereotype.Service;
 
+import com.picker.back.model.dto.AllStatsDTO;
 import com.picker.back.model.dto.BrawlerRequestDTO;
-import com.picker.back.model.dto.BrawlerStatsDTO;
+import com.picker.back.model.dto.StatsDTO;
 import com.picker.back.model.entity.DataEntity;
 import com.picker.back.repository.DataRepository;
 
@@ -25,7 +26,7 @@ public class BrawlerServiceImpl implements BrawlerService {
     }
 
     @Override
-    public List<BrawlerStatsDTO> handleBrawlers(BrawlerRequestDTO brawlerRequestDTO) {
+    public AllStatsDTO handleBrawlers(BrawlerRequestDTO brawlerRequestDTO) {
         logger.info("handleBrawlers called with request: {}", brawlerRequestDTO);
         String map = brawlerRequestDTO.getMap();
         List<String> blueBrawlers = brawlerRequestDTO.getBlueBrawlers();
@@ -92,10 +93,10 @@ public class BrawlerServiceImpl implements BrawlerService {
         }
 
         logger.info("Full team composition request detected, returning default result for now");
-        return List.of(new BrawlerStatsDTO("Brawler 1", 0.0, 0));
+        return new AllStatsDTO(null, null);
     }
 
-    public List<BrawlerStatsDTO> handleNothing(Integer trophies) {
+    public AllStatsDTO handleNothing(Integer trophies) {
         logger.info("handleNothing called");
 
         List<DataEntity> battles = dataRepository.findAll(trophies);
@@ -117,7 +118,7 @@ public class BrawlerServiceImpl implements BrawlerService {
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -128,13 +129,14 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
                 }).toList();
 
+        AllStatsDTO result = new AllStatsDTO(brawlerList, null);
         return result;
     }
 
-    public List<BrawlerStatsDTO> handleMapOnly(String map) {
+    public AllStatsDTO handleMapOnly(String map) {
         logger.info("handleMapOnly called for map: {}", map);
         List<DataEntity> battles = dataRepository.findByMap(map);
         logger.info("Found {} battles for map: {}", battles.size(), map);
@@ -155,7 +157,7 @@ public class BrawlerServiceImpl implements BrawlerService {
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -166,16 +168,18 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
                 }).toList();
 
+        AllStatsDTO result = new AllStatsDTO(brawlerList, null);
         return result;
     }
 
-    public List<BrawlerStatsDTO> handle1Red(String map, String brawler1, Integer trophies) {
+    public AllStatsDTO handle1Red(String map, String brawler1, Integer trophies) {
         logger.info("handle1Red called for map: {} and brawler: {}", map, brawler1);
         List<DataEntity> battles;
         if (map == null || map.isEmpty()) {
+            logger.info("Finding battles by 1Red");
             battles = dataRepository.findBy1Red(brawler1, trophies);
         } else {
             battles = dataRepository.findBy1RedAndMap(map, brawler1, trophies);
@@ -210,7 +214,7 @@ public class BrawlerServiceImpl implements BrawlerService {
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -221,32 +225,31 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
                 }).toList();
 
+        AllStatsDTO result = new AllStatsDTO(brawlerList, null);
         return result;
     }
 
-    public List<BrawlerStatsDTO> handle1Red1Blue(String map, String brawler1, String brawler2, Integer trophies,
+    public AllStatsDTO handle1Red1Blue(String map, String brawler1, String brawler2, Integer trophies,
             boolean bluesIncluded) {
         logger.info("handle1Red1Blue called for map: {} and brawlers: {} and {}", map, brawler1, brawler2);
         List<DataEntity> battles;
-        if (map == null || map.isEmpty()) {
-            if (bluesIncluded) {
+        logger.info("Blues included: {}", bluesIncluded);
+        if (!bluesIncluded) {
+            return handle1Red(map, brawler1, trophies);
+        } else {
+            if (map == null || map.isEmpty()) {
                 battles = dataRepository.findBy1Red1Blue(brawler1, brawler2, trophies);
             } else {
-                battles = dataRepository.findBy1Red(brawler2, trophies);
-            }
-        } else {
-            if (bluesIncluded) {
                 battles = dataRepository.findBy1Red1BlueAndMap(map, brawler1, brawler2, trophies);
-            } else {
-                battles = dataRepository.findBy1RedAndMap(map, brawler2, trophies);
             }
         }
         logger.info("Found {} battles for map: {}", battles.size(), map);
 
         Map<String, int[]> brawlerStats = new HashMap<>();
+        Map<String, int[]> teamStats = new HashMap<>();
 
         logger.debug("Processing {} battles", battles.size());
         for (DataEntity battle : battles) {
@@ -284,15 +287,6 @@ public class BrawlerServiceImpl implements BrawlerService {
         } else {
             newBattles = dataRepository.findBy1Red1BlueAndMap(map, brawler1, brawler2, trophies);
         }
-        logger.info("Found {} battles:", battles.size());
-        newBattles.forEach(battle -> {
-            logger.info("Battle ID: {}, Map: {}, Blue: {} {} {}, Red: {} {} {}, TwoOh: {}",
-                    battle.getId(),
-                    battle.getMap(),
-                    battle.getBlueBrawler1(), battle.getBlueBrawler2(), battle.getBlueBrawler3(),
-                    battle.getRedBrawler1(), battle.getRedBrawler2(), battle.getRedBrawler3(),
-                    battle.getIsTwoOh());
-        });
         logger.info("Found {} battles for map: {}", newBattles.size(), map);
         for (DataEntity battle : newBattles) {
             logger.trace("Processing battle with ID: {}", battle.getId());
@@ -306,18 +300,18 @@ public class BrawlerServiceImpl implements BrawlerService {
                 String team = battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " "
                         + battle.getBlueBrawler3() + " VS " + battle.getRedBrawler1() + " " + battle.getRedBrawler2()
                         + " " + battle.getRedBrawler3();
-                processTeam(brawlerStats, team, redAndBlueHasBrawlers);
+                processTeam(teamStats, team, redAndBlueHasBrawlers);
             } else {
                 String team = battle.getRedBrawler1() + " " + battle.getRedBrawler2() + " " + battle.getRedBrawler3()
                         + " VS "
                         + battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " " + battle.getBlueBrawler3();
-                processTeam(brawlerStats, team, false);
+                processTeam(teamStats, team, false);
             }
         }
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -328,32 +322,43 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
+                }).toList();
+        List<StatsDTO> teamList = teamStats.entrySet().stream()
+                .map(entry -> {
+                    String team = entry.getKey();
+                    int[] stats = entry.getValue();
+                    int wins = stats[0];
+                    int total = stats[1];
+                    double winRate = total > 0 ? (double) wins / total : 0.0;
+
+                    logger.trace("Team: {}, Wins: {}, Total: {}, WinRate: {}",
+                            team, wins, total, winRate);
+
+                    return new StatsDTO(team, winRate, total);
                 }).toList();
 
+        AllStatsDTO result = new AllStatsDTO(brawlerList, teamList);
         return result;
     }
 
-    public List<BrawlerStatsDTO> handle2Red1Blue(String map, String brawler1, String brawler2, String brawler3,
+    public AllStatsDTO handle2Red1Blue(String map, String brawler1, String brawler2, String brawler3,
             Integer trophies, boolean bluesIncluded) {
         logger.info("handle2Red1Blue called for map: {} and brawlers: {} and {}", map, brawler1, brawler2);
         List<DataEntity> battles;
-        if (map == null || map.isEmpty()) {
-            if (bluesIncluded) {
+        if (!bluesIncluded) {
+            return handle2Red(map, brawler1, brawler2, trophies);
+        } else {
+            if (map == null || map.isEmpty()) {
                 battles = dataRepository.findBy2Red1Blue(brawler1, brawler2, brawler3, trophies);
             } else {
-                battles = dataRepository.findBy2Red(brawler1, brawler2, trophies);
-            }
-        } else {
-            if (bluesIncluded) {
                 battles = dataRepository.findBy2Red1BlueAndMap(map, brawler1, brawler2, brawler3, trophies);
-            } else {
-                battles = dataRepository.findBy2RedAndMap(map, brawler1, brawler2, trophies);
             }
         }
         logger.info("Found {} battles for map: {}", battles.size(), map);
 
         Map<String, int[]> brawlerStats = new HashMap<>();
+        Map<String, int[]> teamStats = new HashMap<>();
 
         logger.debug("Processing {} battles", battles.size());
         for (DataEntity battle : battles) {
@@ -412,18 +417,18 @@ public class BrawlerServiceImpl implements BrawlerService {
                 String team = battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " "
                         + battle.getBlueBrawler3() + " VS " + battle.getRedBrawler1() + " " + battle.getRedBrawler2()
                         + " " + battle.getRedBrawler3();
-                processTeam(brawlerStats, team, true);
+                processTeam(teamStats, team, true);
             } else {
                 String team = battle.getRedBrawler1() + " " + battle.getRedBrawler2() + " " + battle.getRedBrawler3()
                         + " VS "
                         + battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " " + battle.getBlueBrawler3();
-                processTeam(brawlerStats, team, false);
+                processTeam(teamStats, team, false);
             }
         }
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -434,34 +439,44 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
                 }).toList();
+        List<StatsDTO> teamList = teamStats.entrySet().stream()
+                .map(entry -> {
+                    String team = entry.getKey();
+                    int[] stats = entry.getValue();
+                    int wins = stats[0];
+                    int total = stats[1];
+                    double winRate = total > 0 ? (double) wins / total : 0.0;
 
+                    logger.trace("Team: {}, Wins: {}, Total: {}, WinRate: {}",
+                            team, wins, total, winRate);
+
+                    return new StatsDTO(team, winRate, total);
+                }).toList();
+        AllStatsDTO result = new AllStatsDTO(brawlerList, teamList);
         return result;
     }
 
-    public List<BrawlerStatsDTO> handle2Red2Blue(String map, String brawler1, String brawler2, String brawler3,
+    public AllStatsDTO handle2Red2Blue(String map, String brawler1, String brawler2, String brawler3,
             String brawler4, Integer trophies, boolean bluesIncluded) {
         logger.info("handle2Red2Blue called for map: {} and brawlers: {} and {}", map, brawler1, brawler2);
         List<DataEntity> battles;
 
-        if (map == null || map.isEmpty()) {
-            if (bluesIncluded) {
+        if (!bluesIncluded) {
+            return handle2Red(map, brawler1, brawler2, trophies);
+        } else {
+            if (map == null || map.isEmpty()) {
                 battles = dataRepository.findBy2Red2Blue(brawler1, brawler2, brawler3, brawler4, trophies);
             } else {
-                battles = dataRepository.findBy2Red(brawler1, brawler2, trophies);
-            }
-        } else {
-            if (bluesIncluded) {
                 battles = dataRepository.findBy2Red2BlueAndMap(map, brawler1, brawler2, brawler3, brawler4, trophies);
-            } else {
-                battles = dataRepository.findBy2RedAndMap(map, brawler1, brawler2, trophies);
             }
         }
 
         logger.info("Found {} battles for map: {}", battles.size(), map);
 
         Map<String, int[]> brawlerStats = new HashMap<>();
+        Map<String, int[]> teamStats = new HashMap<>();
 
         logger.debug("Processing {} battles", battles.size());
         for (DataEntity battle : battles) {
@@ -522,18 +537,18 @@ public class BrawlerServiceImpl implements BrawlerService {
                 String team = battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " "
                         + battle.getBlueBrawler3() + " VS " + battle.getRedBrawler1() + " " + battle.getRedBrawler2()
                         + " " + battle.getRedBrawler3();
-                processTeam(brawlerStats, team, true);
+                processTeam(teamStats, team, true);
             } else {
                 String team = battle.getRedBrawler1() + " " + battle.getRedBrawler2() + " " + battle.getRedBrawler3()
                         + " VS "
                         + battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " " + battle.getBlueBrawler3();
-                processTeam(brawlerStats, team, false);
+                processTeam(teamStats, team, false);
             }
         }
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -544,35 +559,45 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
                 }).toList();
+        List<StatsDTO> teamList = teamStats.entrySet().stream()
+                .map(entry -> {
+                    String team = entry.getKey();
+                    int[] stats = entry.getValue();
+                    int wins = stats[0];
+                    int total = stats[1];
+                    double winRate = total > 0 ? (double) wins / total : 0.0;
 
+                    logger.trace("Team: {}, Wins: {}, Total: {}, WinRate: {}",
+                            team, wins, total, winRate);
+
+                    return new StatsDTO(team, winRate, total);
+                }).toList();
+        AllStatsDTO result = new AllStatsDTO(brawlerList, teamList);
         return result;
     }
 
-    public List<BrawlerStatsDTO> handle3Red2Blue(String map, String brawler1, String brawler2, String brawler3,
+    public AllStatsDTO handle3Red2Blue(String map, String brawler1, String brawler2, String brawler3,
             String brawler4, String brawler5, Integer trophies, boolean bluesIncluded) {
         logger.info("handle3Red2Blue called for map: {} and brawlers: {} and {}", map, brawler1, brawler2);
         List<DataEntity> battles;
 
-        if (map == null || map.isEmpty()) {
-            if (bluesIncluded) {
+        if (!bluesIncluded) {
+            return handle3Red(map, brawler1, brawler2, brawler3, trophies);
+        } else {
+            if (map == null || map.isEmpty()) {
                 battles = dataRepository.findBy3Red2Blue(brawler1, brawler2, brawler3, brawler4, brawler5, trophies);
             } else {
-                battles = dataRepository.findBy3Red(brawler1, brawler2, brawler3, trophies);
-            }
-        } else {
-            if (bluesIncluded) {
                 battles = dataRepository.findBy3Red2BlueAndMap(map, brawler1, brawler2, brawler3, brawler4, brawler5,
                         trophies);
-            } else {
-                battles = dataRepository.findBy3RedAndMap(map, brawler1, brawler2, brawler3, trophies);
             }
         }
 
         logger.info("Found {} battles for map: {}", battles.size(), map);
 
         Map<String, int[]> brawlerStats = new HashMap<>();
+        Map<String, int[]> teamStats = new HashMap<>();
 
         logger.debug("Processing {} battles", battles.size());
         for (DataEntity battle : battles) {
@@ -644,7 +669,7 @@ public class BrawlerServiceImpl implements BrawlerService {
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -655,13 +680,26 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
                 }).toList();
+        List<StatsDTO> teamList = teamStats.entrySet().stream()
+                .map(entry -> {
+                    String team = entry.getKey();
+                    int[] stats = entry.getValue();
+                    int wins = stats[0];
+                    int total = stats[1];
+                    double winRate = total > 0 ? (double) wins / total : 0.0;
 
+                    logger.trace("Team: {}, Wins: {}, Total: {}, WinRate: {}",
+                            team, wins, total, winRate);
+
+                    return new StatsDTO(team, winRate, total);
+                }).toList();
+        AllStatsDTO result = new AllStatsDTO(brawlerList, teamList);
         return result;
     }
 
-    public List<BrawlerStatsDTO> handle2Red(String map, String brawler1, String brawler2, Integer trophies) {
+    public AllStatsDTO handle2Red(String map, String brawler1, String brawler2, Integer trophies) {
         logger.info("handle2Red called for map: {} and brawlers: {} and {}", map, brawler1, brawler2);
         List<DataEntity> battles;
         if (map == null || map.isEmpty()) {
@@ -699,7 +737,7 @@ public class BrawlerServiceImpl implements BrawlerService {
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -710,13 +748,13 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
                 }).toList();
-
+        AllStatsDTO result = new AllStatsDTO(brawlerList, null);
         return result;
     }
 
-    public List<BrawlerStatsDTO> handle3Red(String map, String brawler1, String brawler2, String brawler3,
+    public AllStatsDTO handle3Red(String map, String brawler1, String brawler2, String brawler3,
             Integer trophies) {
         logger.info("handle3Red called for map: {} and brawlers: {} {} and {}", map, brawler1, brawler2, brawler3);
         List<DataEntity> battles;
@@ -761,7 +799,7 @@ public class BrawlerServiceImpl implements BrawlerService {
 
         logger.debug("Found stats for {} unique brawlers before filtering", brawlerStats.size());
 
-        List<BrawlerStatsDTO> result = brawlerStats.entrySet().stream()
+        List<StatsDTO> brawlerList = brawlerStats.entrySet().stream()
                 .map(entry -> {
                     String brawler = entry.getKey();
                     int[] stats = entry.getValue();
@@ -772,9 +810,9 @@ public class BrawlerServiceImpl implements BrawlerService {
                     logger.trace("Brawler: {}, Wins: {}, Total: {}, WinRate: {}",
                             brawler, wins, total, winRate);
 
-                    return new BrawlerStatsDTO(brawler, winRate, total);
+                    return new StatsDTO(brawler, winRate, total);
                 }).toList();
-
+        AllStatsDTO result = new AllStatsDTO(brawlerList, null);
         return result;
     }
 

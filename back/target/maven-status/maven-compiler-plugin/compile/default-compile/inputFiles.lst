@@ -4,9 +4,10 @@
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/config/SchedulerConfig.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/controller/DataController.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/controller/DebugController.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/AllStatsDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/ApiResponseDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/BrawlerRequestDTO.java
-/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/BrawlerStatsDTO.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/StatsDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/entity/DataEntity.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/repository/DataRepository.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/scheduler/DataFetchScheduler.java

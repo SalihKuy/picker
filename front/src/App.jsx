@@ -199,6 +199,9 @@ function App() {
         console.log('API Response Received:', response.data);
         const data = response.data || [];
 
+        let brawlerList = data.brawlerStats || [];
+        let teamList = data.teamStats || [];
+
         const currentRawTeamStats = [];
         const currentRawIndividualStats = [];
 
@@ -209,31 +212,27 @@ function App() {
             .join(' ');
         };
 
-        for (const item of data) {
-          if (typeof item === 'object' && item !== null && item.brawlerName && typeof item.winRate === 'number' && typeof item.matchCount === 'number') {
-            if (/\s+VS\s+/i.test(item.brawlerName)) {
-              const parts = item.brawlerName.split(/(\s+VS\s+)/i);
-              let formattedParts = [];
-              for (const part of parts) {
-                const trimmedPart = part?.trim();
-                if (!trimmedPart) continue;
-
-                if (trimmedPart.toUpperCase() === 'VS') {
-                  formattedParts.push('VS');
-                } else {
-                  formattedParts.push(capitalizeBrawlerName(trimmedPart));
-                }
-              }
-              item.brawlerName = formattedParts.join(' ');
-              currentRawTeamStats.push(item);
-            } else {
-              item.brawlerName = capitalizeBrawlerName(item.brawlerName);
-              currentRawIndividualStats.push(item);
-            }
-          } else {
-            console.warn("Skipping invalid item in API response:", item);
-          }
+        for (const item of brawlerList) {
+          item.brawlerName = capitalizeBrawlerName(item.brawlerName);
+          currentRawIndividualStats.push(item);
         }
+        for (const item of teamList) {
+          const parts = item.brawlerName.split(/(\s+VS\s+)/i);
+          let formattedParts = [];
+          for (const part of parts) {
+            const trimmedPart = part?.trim();
+            if (!trimmedPart) continue;
+
+            if (trimmedPart.toUpperCase() === 'VS') {
+              formattedParts.push('VS');
+            } else {
+              formattedParts.push(capitalizeBrawlerName(trimmedPart));
+            }
+          }
+          item.brawlerName = formattedParts.join(' ');
+          currentRawTeamStats.push(item);
+        }
+
 
         console.log('Parsed Raw Individual Stats:', currentRawIndividualStats.length);
         console.log('Parsed Raw Team Stats:', currentRawTeamStats.length);
@@ -255,10 +254,7 @@ function App() {
   }, [map, blueBrawlers, redBrawlers, rank, bluesIncluded]);
 
   useEffect(() => {
-    console.log(`Applying frontend filters and sorting... Column: ${sortColumn}, Direction: ${sortDirection}`);
-
     const activeBans = new Set(bans.filter(b => b !== "").map(b => b.toUpperCase()));
-    console.log("Active Bans for filtering:", activeBans);
 
     let processedBrawlerStats = rawBrawlerStats.filter(brawler => !activeBans.has(brawler.brawlerName.toUpperCase())).filter(brawler => brawler.matchCount >= filterValue);
 
@@ -267,9 +263,6 @@ function App() {
       const isBanned = teamMembers.some(member => activeBans.has(member));
       return !isBanned;
     });
-
-    console.log('Filtered Individual Stats Count:', processedBrawlerStats.length);
-    console.log('Filtered Team Stats Count:', processedTeamStats.length);
 
 
     const sortMultiplier = sortDirection === 'asc' ? 1 : -1;
@@ -292,7 +285,6 @@ function App() {
     processedBrawlerStats.sort(sortFn);
     processedTeamStats.sort(sortFn);
 
-    console.log('Setting Filtered/Sorted State...');
     setFilteredBrawlerStats(processedBrawlerStats);
     setFilteredTeamStats(processedTeamStats);
 
@@ -325,14 +317,14 @@ function App() {
     setRank(parseInt(event.target.value, 10));
   }
 
-  function SortIndicator({direction}) {
+  function SortIndicator({ direction }) {
     if (!direction) return null;
     return direction === 'asc' ? ' ▲' : ' ▼';
   };
 
 
   function handleHeaderClick(column) {
-    if (isLoading) return; 
+    if (isLoading) return;
 
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -420,21 +412,21 @@ function App() {
         <div style={{ display: "flex", flexDirection: 'column', gap: '10px' }}>
           <h4 style={{ margin: '0 0 5px 0', color: '#87CEFA' }}>Blue Team</h4>
           {[0, 1].map(index => (
-            <Select key={`blue-${index}`} options={brawlers} value={findBrawlerOption(blueBrawlers[index])} onChange={(selectedOption) => handleBlueChange(selectedOption, index)} styles={customSelectStyles} placeholder={`Blue Brawler ${index + 1}`} isClearable isSearchable menuPortalTarget={document.body} classNamePrefix="react-select" isDisabled={isLoading}/>
+            <Select key={`blue-${index}`} options={brawlers} value={findBrawlerOption(blueBrawlers[index])} onChange={(selectedOption) => handleBlueChange(selectedOption, index)} styles={customSelectStyles} placeholder={`Blue Brawler ${index + 1}`} isClearable isSearchable menuPortalTarget={document.body} classNamePrefix="react-select" isDisabled={isLoading} />
           ))}
         </div>
 
         <div style={{ display: "flex", flexDirection: 'column', gap: '10px' }}>
           <h4 style={{ margin: '0 0 5px 0', color: '#FF7F7F' }}>Red Team</h4>
           {[0, 1, 2].map(index => (
-            <Select key={`red-${index}`} options={brawlers} value={findBrawlerOption(redBrawlers[index])} onChange={(selectedOption) => handleRedChange(selectedOption, index)} styles={customSelectStyles} placeholder={`Red Brawler ${index + 1}`} isClearable isSearchable menuPortalTarget={document.body} classNamePrefix="react-select" isDisabled={isLoading}/>
+            <Select key={`red-${index}`} options={brawlers} value={findBrawlerOption(redBrawlers[index])} onChange={(selectedOption) => handleRedChange(selectedOption, index)} styles={customSelectStyles} placeholder={`Red Brawler ${index + 1}`} isClearable isSearchable menuPortalTarget={document.body} classNamePrefix="react-select" isDisabled={isLoading} />
           ))}
         </div>
 
         <div style={{ display: "flex", flexDirection: 'column', gap: '10px' }}>
           <h4 style={{ margin: '0 0 5px 0', color: '#AAAAAA' }}>Bans</h4>
           {[0, 1, 2, 3, 4, 5].map(index => (
-            <Select key={`ban-${index}`} options={brawlers} value={findBrawlerOption(bans[index])} onChange={(selectedOption) => handleBanChange(selectedOption, index)} styles={customSelectStyles} placeholder={`Ban ${index + 1}`} isClearable isSearchable menuPortalTarget={document.body} classNamePrefix="react-select"/>
+            <Select key={`ban-${index}`} options={brawlers} value={findBrawlerOption(bans[index])} onChange={(selectedOption) => handleBanChange(selectedOption, index)} styles={customSelectStyles} placeholder={`Ban ${index + 1}`} isClearable isSearchable menuPortalTarget={document.body} classNamePrefix="react-select" />
           ))}
         </div>
       </div>

@@ -1,12 +1,12 @@
 package com.picker.back.model.dto;
 
-public class BrawlerStatsDTO {
+public class StatsDTO {
     private String brawlerName;
     private double winRate;
     private int matchCount;
     private int trophies;
     
-    public BrawlerStatsDTO(String brawlerName, double winRate, int matchCount) {
+    public StatsDTO(String brawlerName, double winRate, int matchCount) {
         this.brawlerName = brawlerName;
         this.winRate = winRate;
         this.matchCount = matchCount;
