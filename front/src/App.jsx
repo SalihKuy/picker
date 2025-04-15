@@ -325,7 +325,7 @@ function App() {
     setRank(parseInt(event.target.value, 10));
   }
 
-  function SortIndicator(direction) {
+  function SortIndicator({direction}) {
     if (!direction) return null;
     return direction === 'asc' ? ' ▲' : ' ▼';
   };
