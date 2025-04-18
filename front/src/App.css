@@ -77,6 +77,22 @@ body {
   overflow-y: auto;
 }
 
+.user-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.discord-logo {
+  width: 24px;
+  height: 24px;
+}
+
 .controls-row {
   display: flex;
   gap: 15px;

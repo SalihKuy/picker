@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import './App.css';
 import axios from 'axios';
 import Select from 'react-select';
+import discordLogo from "./assets/discord.svg";
 
 const brawlers = [
   { value: "8-BIT", label: "8-Bit" },
@@ -217,20 +218,20 @@ function App() {
 
       for (const item of teamList) {
         if (item.brawlerName) {
-            const parts = item.brawlerName.split(/(\s+VS\s+)/i);
-            let formattedParts = [];
-            for (const part of parts) {
-                const trimmedPart = part?.trim();
-                if (!trimmedPart) continue;
+          const parts = item.brawlerName.split(/(\s+VS\s+)/i);
+          let formattedParts = [];
+          for (const part of parts) {
+            const trimmedPart = part?.trim();
+            if (!trimmedPart) continue;
 
-                if (trimmedPart.toUpperCase() === 'VS') {
-                    formattedParts.push('VS');
-                } else {
-                    formattedParts.push(capitalizeBrawlerName(trimmedPart));
-                }
+            if (trimmedPart.toUpperCase() === 'VS') {
+              formattedParts.push('VS');
+            } else {
+              formattedParts.push(capitalizeBrawlerName(trimmedPart));
             }
-            item.brawlerName = formattedParts.join(' ');
-            currentRawTeamStats.push(item);
+          }
+          item.brawlerName = formattedParts.join(' ');
+          currentRawTeamStats.push(item);
         }
       }
 
@@ -262,10 +263,10 @@ function App() {
       .filter(brawler => brawler.matchCount >= filterValue);
 
     let processedTeamStats = rawTeamStats.filter(team => {
-        if (!team.brawlerName) return false;
-        const teamMembers = team.brawlerName.split(/ VS /i).map(name => name.trim().toUpperCase())
-        const isBanned = teamMembers.some(member => activeBans.has(member));
-        return !isBanned;
+      if (!team.brawlerName) return false;
+      const teamMembers = team.brawlerName.split(/ VS /i).map(name => name.trim().toUpperCase())
+      const isBanned = teamMembers.some(member => activeBans.has(member));
+      return !isBanned;
     }).filter(team => team.matchCount >= filterValue);
 
     const sortMultiplier = sortDirection === 'asc' ? 1 : -1;
@@ -282,9 +283,9 @@ function App() {
       if (sortColumn === 'brawlerName') {
         comparison = String(valA).localeCompare(String(valB));
       } else {
-         const numA = Number(valA);
-         const numB = Number(valB);
-         comparison = (isNaN(numA) ? -Infinity : numA) - (isNaN(numB) ? -Infinity : numB);
+        const numA = Number(valA);
+        const numB = Number(valB);
+        comparison = (isNaN(numA) ? -Infinity : numA) - (isNaN(numB) ? -Infinity : numB);
       }
 
       return comparison * sortMultiplier;
@@ -374,39 +375,39 @@ function App() {
     ];
 
     return (
-       <div className="table-container"> {/* Added for potential horizontal scroll */}
-          <table className="stats-table">
-            <thead>
-              <tr>
-                {columns.map(col => (
-                  <th
-                    key={col.key}
-                    style={{ textAlign: col.align, cursor: 'pointer' }}
-                    onClick={() => handleHeaderClick(col.key)}
-                  >
-                    {col.label}
-                    {sortColumn === col.key && <SortIndicator direction={sortDirection} />}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={`${item.brawlerName}-${index}`}>
-                  <td style={{ textAlign: columns[0].align }}>{item.brawlerName}</td>
-                  <td style={{
-                    textAlign: columns[1].align,
-                    color: item.winRate > 0.5 ? '#87CEFA' : item.winRate < 0.5 ? '#FF7F7F' : 'white'
-                  }}>
-                    {(item.winRate * 100).toFixed(1)}%
-                  </td>
-                  <td style={{ textAlign: columns[2].align }}>
-                    {item.matchCount}
-                  </td>
-                </tr>
+      <div className="table-container"> {/* Added for potential horizontal scroll */}
+        <table className="stats-table">
+          <thead>
+            <tr>
+              {columns.map(col => (
+                <th
+                  key={col.key}
+                  style={{ textAlign: col.align, cursor: 'pointer' }}
+                  onClick={() => handleHeaderClick(col.key)}
+                >
+                  {col.label}
+                  {sortColumn === col.key && <SortIndicator direction={sortDirection} />}
+                </th>
               ))}
-            </tbody>
-          </table>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <tr key={`${item.brawlerName}-${index}`}>
+                <td style={{ textAlign: columns[0].align }}>{item.brawlerName}</td>
+                <td style={{
+                  textAlign: columns[1].align,
+                  color: item.winRate > 0.5 ? '#87CEFA' : item.winRate < 0.5 ? '#FF7F7F' : 'white'
+                }}>
+                  {(item.winRate * 100).toFixed(1)}%
+                </td>
+                <td style={{ textAlign: columns[2].align }}>
+                  {item.matchCount}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   };
@@ -419,47 +420,47 @@ function App() {
           <label htmlFor="mapSelect" className="sidebar-label">Map:</label>
           <select id="mapSelect" value={map} onChange={handleMapChange} className="sidebar-select" disabled={isLoading}>
             <option value="">All Maps / Select a Map</option>
-             <optgroup label="Bounty">
-                <option value="Dry Season">Dry Season</option>
-                <option value="Hideout">Hideout</option>
-                <option value="Layer Cake">Layer Cake</option>
-                <option value="Shooting Star">Shooting Star</option>
+            <optgroup label="Bounty">
+              <option value="Dry Season">Dry Season</option>
+              <option value="Hideout">Hideout</option>
+              <option value="Layer Cake">Layer Cake</option>
+              <option value="Shooting Star">Shooting Star</option>
             </optgroup>
 
             <optgroup label="Brawl Ball">
-                <option value="Center Stage">Center Stage</option>
-                <option value="Pinball Dreams">Pinball Dreams</option>
-                <option value="Sneaky Fields">Sneaky Fields</option>
-                <option value="Triple Dribble">Triple Dribble</option>
-                </optgroup>
+              <option value="Center Stage">Center Stage</option>
+              <option value="Pinball Dreams">Pinball Dreams</option>
+              <option value="Sneaky Fields">Sneaky Fields</option>
+              <option value="Triple Dribble">Triple Dribble</option>
+            </optgroup>
 
-                <optgroup label="Cleaning Duty">
-                <option value="Dumpster Drive">Dumpster Drive</option>
-                <option value="In The Bins">In The Bins</option>
-                <option value="Rubbish Rampage">Rubbish Rampage</option>
-                <option value="Waste Haven">Waste Haven</option>
-                </optgroup>
+            <optgroup label="Cleaning Duty">
+              <option value="Dumpster Drive">Dumpster Drive</option>
+              <option value="In The Bins">In The Bins</option>
+              <option value="Rubbish Rampage">Rubbish Rampage</option>
+              <option value="Waste Haven">Waste Haven</option>
+            </optgroup>
 
-                <optgroup label="Gem Grab">
-                <option value="Double Swoosh">Double Swoosh</option>
-                <option value="Gem Fort">Gem Fort</option>
-                <option value="Hard Rock Mine">Hard Rock Mine</option>
-                <option value="Undermine">Undermine</option>
-                </optgroup>
+            <optgroup label="Gem Grab">
+              <option value="Double Swoosh">Double Swoosh</option>
+              <option value="Gem Fort">Gem Fort</option>
+              <option value="Hard Rock Mine">Hard Rock Mine</option>
+              <option value="Undermine">Undermine</option>
+            </optgroup>
 
-                <optgroup label="Heist">
-                <option value="Bridge Too Far">Bridge Too Far</option>
-                <option value="Hot Potato">Hot Potato</option>
-                <option value="Kaboom Canyon">Kaboom Canyon</option>
-                <option value="Safe Zone">Safe Zone</option>
-                </optgroup>
+            <optgroup label="Heist">
+              <option value="Bridge Too Far">Bridge Too Far</option>
+              <option value="Hot Potato">Hot Potato</option>
+              <option value="Kaboom Canyon">Kaboom Canyon</option>
+              <option value="Safe Zone">Safe Zone</option>
+            </optgroup>
 
-                <optgroup label="Knockout">
-                <option value="Belle's Rock">Belle's Rock</option>
-                <option value="Flaring Phoenix">Flaring Phoenix</option>
-                <option value="New Horizons">New Horizons</option>
-                <option value="Out in the Open">Out in the Open</option>
-                </optgroup>
+            <optgroup label="Knockout">
+              <option value="Belle's Rock">Belle's Rock</option>
+              <option value="Flaring Phoenix">Flaring Phoenix</option>
+              <option value="New Horizons">New Horizons</option>
+              <option value="Out in the Open">Out in the Open</option>
+            </optgroup>
           </select>
         </div>
 
@@ -524,6 +525,10 @@ function App() {
       </div>
 
       <div className="main-content">
+        <div className="user-info">
+          <img src={discordLogo} alt="Discord Logo" className="discord-logo" />
+          <span>mrshark477</span>
+        </div>
         <div className="controls-row">
           <button
             onClick={handleShowClick}
@@ -565,11 +570,11 @@ function App() {
           <div className="control-group">
             <label htmlFor="rankFilter" className="control-label">Ignore ranks below:</label>
             <select
-                id="rankFilter"
-                className="control-input select-input"
-                onChange={handleRankChange}
-                value={rank}
-                disabled={isLoading}>
+              id="rankFilter"
+              className="control-input select-input"
+              onChange={handleRankChange}
+              value={rank}
+              disabled={isLoading}>
               <option value="18">Masters I</option>
               <option value="19">Masters II</option>
               <option value="20">Masters III</option>
@@ -591,7 +596,7 @@ function App() {
               {filteredTeamStats.length > 0 ? (
                 renderTable(filteredTeamStats, "Teams")
               ) : (
-                 !isLoading && !error && <p className="no-data-message">No team statistics available for the current filters.</p>
+                !isLoading && !error && <p className="no-data-message">No team statistics available for the current filters.</p>
               )}
             </>
           )}
@@ -625,7 +630,7 @@ function App() {
                 })()}
               </h3>
               {filteredBrawlerStats.length > 0 ? (
-                 renderTable(filteredBrawlerStats, "Brawlers")
+                renderTable(filteredBrawlerStats, "Brawlers")
               ) : (
                 !isLoading && !error && (
                   <p className="no-data-message">
