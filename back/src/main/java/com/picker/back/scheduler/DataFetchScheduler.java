@@ -125,7 +125,9 @@ public class DataFetchScheduler {
                             battleTags.add(player.getTag());
                         }
                     }
-
+                    if(highestTrophies > 22) {
+                        return;
+                    }
                     if (playerOnTeam2) {
                         logger.info("Player {} is on Team 2, swapping team positions.", playerTag);
                         List<Player> temp = teams.get(0);

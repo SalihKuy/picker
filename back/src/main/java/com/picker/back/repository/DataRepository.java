@@ -22,9 +22,10 @@ public interface DataRepository extends JpaRepository<DataEntity, Long> {
     @Query("SELECT d FROM DataEntity d " +
     "WHERE d.map = :map " +
     "AND " +
-    "d.trophies > 18")
+    "d.trophies > :trophies")
     List<DataEntity> findByMap(
-        @Param("map") String map);
+        @Param("map") String map,
+        @Param("trophies") Integer trophies);
 
     @Query("SELECT d FROM DataEntity d " +
             "WHERE d.map = :map " +

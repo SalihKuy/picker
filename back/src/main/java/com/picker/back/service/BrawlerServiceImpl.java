@@ -53,7 +53,7 @@ public class BrawlerServiceImpl implements BrawlerService {
                 (blueBrawlers == null || areAllEmpty(blueBrawlers)) &&
                 (redBrawlers == null || areAllEmpty(redBrawlers))) {
             logger.info("Map-only request detected, delegating to handleMapOnly for map: {}", map);
-            return handleMapOnly(map);
+            return handleMapOnly(map, trophies);
         } else if (redBrawlers != null && countNonEmptyStrings(redBrawlers) == 1 &&
                 (blueBrawlers == null || areAllEmpty(blueBrawlers))) {
             logger.info("1 red request detected, delegating to handle1Red for map: {} and brawler: {}", map,
@@ -136,9 +136,9 @@ public class BrawlerServiceImpl implements BrawlerService {
         return result;
     }
 
-    public AllStatsDTO handleMapOnly(String map) {
+    public AllStatsDTO handleMapOnly(String map, Integer trophies) {
         logger.info("handleMapOnly called for map: {}", map);
-        List<DataEntity> battles = dataRepository.findByMap(map);
+        List<DataEntity> battles = dataRepository.findByMap(map, trophies);
         logger.info("Found {} battles for map: {}", battles.size(), map);
 
         Map<String, int[]> brawlerStats = new HashMap<>();

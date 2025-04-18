@@ -2,3 +2,269 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #2d2d2d;
+  color: white;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #2d2d2d;
+  color: white;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 350px;
+  max-width: 90%;
+  min-height: 100vh;
+  background-color: #444444;
+  padding: 20px;
+  box-sizing: border-box;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-label,
+.sidebar-heading {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.sidebar-heading {
+    margin-top: 0;
+}
+
+.sidebar-select,
+.brawler-select .react-select__control {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+  border: 1px solid #666;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.brawler-select {
+    width: 100%;
+}
+
+
+.main-content {
+  background-color: #222222;
+  flex: 1;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.controls-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.control-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.control-label {
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+.control-button {
+  padding: 10px 20px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.control-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.control-input {
+  height: 40px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border: 1px solid #666;
+  background-color: #333;
+  color: white;
+  padding: 0 10px;
+}
+
+.number-input {
+    width: 100px;
+}
+
+.select-input {
+    width: 150px;
+    padding: 0 10px;
+}
+
+
+.status-message {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #AAAAAA;
+}
+
+.status-message.error {
+  color: #FF7F7F;
+  font-weight: bold;
+}
+
+.section-title {
+    margin-bottom: 15px;
+    margin-top: 30px;
+    font-size: 1.2rem;
+}
+
+.section-title:first-of-type {
+    margin-top: 0;
+}
+
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 30px;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+}
+
+.stats-table th,
+.stats-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #555;
+  white-space: nowrap;
+}
+
+.stats-table th {
+  font-weight: bold;
+  background-color: #3a3a3a;
+  border-bottom: 2px solid #666;
+}
+
+.stats-table tbody tr:nth-child(even) {
+  background-color: #3a3a3a;
+}
+
+.stats-table tbody tr:nth-child(odd) {
+  background-color: #444444;
+}
+
+.stats-table tbody tr:hover {
+    background-color: #505050;
+}
+
+.no-data-message {
+    color: #aaa;
+    margin-top: 20px;
+}
+
+
+@media (max-width: 900px) {
+    .sidebar {
+        flex-basis: 300px;
+    }
+    .stats-table {
+      min-width: 450px;
+    }
+}
+
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex: 0 0 auto;
+    min-height: auto;
+    max-width: 100%;
+    border-bottom: 2px solid #2d2d2d;
+    overflow-y: visible;
+  }
+
+  .main-content {
+    min-height: auto;
+    overflow-y: visible;
+  }
+
+  .controls-row {
+      gap: 10px;
+      margin-bottom: 15px;
+  }
+
+  .control-group {
+      width: 100%;
+      justify-content: space-between;
+  }
+
+  .control-input {
+    flex-grow: 1;
+    max-width: 200px;
+  }
+
+  .number-input {
+    width: auto;
+  }
+
+  .select-input {
+    width: auto;
+    min-width: 120px;
+  }
+
+
+  .stats-table th,
+  .stats-table td {
+      padding: 8px 10px;
+      font-size: 0.9rem;
+  }
+   .stats-table {
+      min-width: 0;
+    }
+   .stats-table th, .stats-table td {
+        white-space: normal;
+   }
+
+   .section-title {
+        font-size: 1.1rem;
+   }
+}
