@@ -191,24 +191,32 @@ public class BrawlerServiceImpl implements BrawlerService {
         logger.debug("Processing {} battles", battles.size());
         for (DataEntity battle : battles) {
             logger.trace("Processing battle with ID: {}", battle.getId());
-            if (!brawler1.equals(battle.getBlueBrawler1())) {
-                processBrawler(brawlerStats, battle.getBlueBrawler1(), true, battle.getIsTwoOh());
-            }
-            if (!brawler1.equals(battle.getBlueBrawler2())) {
-                processBrawler(brawlerStats, battle.getBlueBrawler2(), true, battle.getIsTwoOh());
-            }
-            if (!brawler1.equals(battle.getBlueBrawler3())) {
-                processBrawler(brawlerStats, battle.getBlueBrawler3(), true, battle.getIsTwoOh());
+            boolean brawler1IsBlue = brawler1.equals(battle.getBlueBrawler1()) ||
+                    brawler1.equals(battle.getBlueBrawler2()) ||
+                    brawler1.equals(battle.getBlueBrawler3());
+
+            if (!brawler1IsBlue) {
+                if (!brawler1.equals(battle.getBlueBrawler1())) {
+                    processBrawler(brawlerStats, battle.getBlueBrawler1(), true, battle.getIsTwoOh());
+                }
+                if (!brawler1.equals(battle.getBlueBrawler2())) {
+                    processBrawler(brawlerStats, battle.getBlueBrawler2(), true, battle.getIsTwoOh());
+                }
+                if (!brawler1.equals(battle.getBlueBrawler3())) {
+                    processBrawler(brawlerStats, battle.getBlueBrawler3(), true, battle.getIsTwoOh());
+                }
             }
 
-            if (!brawler1.equals(battle.getRedBrawler1())) {
-                processBrawler(brawlerStats, battle.getRedBrawler1(), false, battle.getIsTwoOh());
-            }
-            if (!brawler1.equals(battle.getRedBrawler2())) {
-                processBrawler(brawlerStats, battle.getRedBrawler2(), false, battle.getIsTwoOh());
-            }
-            if (!brawler1.equals(battle.getRedBrawler3())) {
-                processBrawler(brawlerStats, battle.getRedBrawler3(), false, battle.getIsTwoOh());
+            if (brawler1IsBlue) {
+                if (!brawler1.equals(battle.getRedBrawler1())) {
+                    processBrawler(brawlerStats, battle.getRedBrawler1(), false, battle.getIsTwoOh());
+                }
+                if (!brawler1.equals(battle.getRedBrawler2())) {
+                    processBrawler(brawlerStats, battle.getRedBrawler2(), false, battle.getIsTwoOh());
+                }
+                if (!brawler1.equals(battle.getRedBrawler3())) {
+                    processBrawler(brawlerStats, battle.getRedBrawler3(), false, battle.getIsTwoOh());
+                }
             }
         }
 

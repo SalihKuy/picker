@@ -34,7 +34,7 @@ public class DataFetchScheduler {
     private final DataService dataService;
     private final DataRepository dataRepository;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private boolean start = true; // debug variable
+    private boolean start = false; // debug variable
 
     public DataFetchScheduler(ApiService apiService, DataService dataService, DataRepository dataRepository) {
         this.apiService = apiService;

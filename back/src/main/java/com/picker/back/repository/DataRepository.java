@@ -39,9 +39,12 @@ public interface DataRepository extends JpaRepository<DataEntity, Long> {
             @Param("trophies") Integer trophies);
 
     @Query("SELECT d FROM DataEntity d " +
-            "WHERE (d.redBrawler1 = :brawler1 OR d.redBrawler2 = :brawler1 OR d.redBrawler3 = :brawler1)" +
-            "AND " +
-            "d.trophies > :trophies")
+            "WHERE (" +
+            "  (d.redBrawler1 = :brawler1 OR d.redBrawler2 = :brawler1 OR d.redBrawler3 = :brawler1)" +
+            "  OR " +
+            "  (d.blueBrawler1 = :brawler1 OR d.blueBrawler2 = :brawler1 OR d.blueBrawler3 = :brawler1)" +
+            ")" +
+            "AND d.trophies > :trophies")
     List<DataEntity> findBy1Red(
             @Param("brawler1") String brawler1,
             @Param("trophies") Integer trophies);
