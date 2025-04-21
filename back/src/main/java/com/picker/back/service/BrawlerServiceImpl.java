@@ -666,12 +666,12 @@ public class BrawlerServiceImpl implements BrawlerService {
                 String team = battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " "
                         + battle.getBlueBrawler3() + " VS " + battle.getRedBrawler1() + " " + battle.getRedBrawler2()
                         + " " + battle.getRedBrawler3();
-                processTeam(brawlerStats, team, true);
+                processTeam(teamStats, team, true);
             } else {
                 String team = battle.getRedBrawler1() + " " + battle.getRedBrawler2() + " " + battle.getRedBrawler3()
                         + " VS "
                         + battle.getBlueBrawler1() + " " + battle.getBlueBrawler2() + " " + battle.getBlueBrawler3();
-                processTeam(brawlerStats, team, false);
+                processTeam(teamStats, team, false);
             }
         }
 

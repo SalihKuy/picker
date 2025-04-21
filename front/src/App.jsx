@@ -1,7 +1,7 @@
-import { useEffect, useState, useCallback } from 'react';
-import './App.css';
-import axios from 'axios';
-import Select from 'react-select';
+import { useEffect, useState, useCallback } from "react";
+import "./App.css";
+import axios from "axios";
+import Select from "react-select";
 import discordLogo from "./assets/discord.svg";
 
 const brawlers = [
@@ -104,18 +104,18 @@ const customSelectStyles = {
     borderColor: state.isFocused ? "#888" : "#666",
     minHeight: "40px",
     color: "white",
-    boxShadow: state.isFocused ? '0 0 0 1px #888' : 'none',
-    '&:hover': {
-      borderColor: '#888',
+    boxShadow: state.isFocused ? "0 0 0 1px #888" : "none",
+    "&:hover": {
+      borderColor: "#888",
     },
-    width: '100%',
+    width: "100%",
   }),
   option: (baseStyles, state) => ({
     ...baseStyles,
     backgroundColor: state.isSelected ? "#555" : state.isFocused ? "#444" : "#333",
     color: "white",
     padding: "8px 12px",
-    '&:active': {
+    "&:active": {
       backgroundColor: "#666",
     },
   }),
@@ -127,7 +127,7 @@ const customSelectStyles = {
     ...baseStyles,
     backgroundColor: "#333",
     border: "1px solid #666",
-    marginTop: '4px',
+    marginTop: "4px",
     zIndex: 9999
   }),
   menuPortal: base => ({
@@ -143,20 +143,20 @@ const customSelectStyles = {
     color: "#aaa"
   }),
   indicatorSeparator: () => ({
-    display: 'none',
+    display: "none",
   }),
   dropdownIndicator: (base, state) => ({
     ...base,
-    color: state.isFocused ? 'white' : '#aaa',
-    '&:hover': {
-      color: 'white',
+    color: state.isFocused ? "white" : "#aaa",
+    "&:hover": {
+      color: "white",
     },
   }),
   clearIndicator: (base) => ({
     ...base,
-    color: '#aaa',
-    '&:hover': {
-      color: 'white',
+    color: "#aaa",
+    "&:hover": {
+      color: "white",
     },
   }),
 };
@@ -172,21 +172,21 @@ function App() {
   const [filteredTeamStats, setFilteredTeamStats] = useState([]);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [filterValue, setFilterValue] = useState(0);
-  const [showType, setShowType] = useState("Brawlers");
+  const [showType, setShowType] = useState("Brawler");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [rank, setRank] = useState(18);
-  const [sortColumn, setSortColumn] = useState('matchCount');
-  const [sortDirection, setSortDirection] = useState('desc');
+  const [sortColumn, setSortColumn] = useState("matchCount");
+  const [sortDirection, setSortDirection] = useState("desc");
   const [bluesIncluded, setBluesIncluded] = useState(false);
   const [isButton2Hovered, setIsButton2Hovered] = useState(false);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    console.log(`Fetching data... Map: '${map}', Blue:`, blueBrawlers.filter(b => b), "Red:", redBrawlers.filter(b => b), "rank:", rank, "Blues Included:", bluesIncluded);
+    console.log(`Fetching data... Map: "${map}", Blue:`, blueBrawlers.filter(b => b), "Red:", redBrawlers.filter(b => b), "rank:", rank, "Blues Included:", bluesIncluded);
     try {
-      const response = await axios.post('http://localhost:8080/api/data/brawler', {
+      const response = await axios.post("http://localhost:8080/api/data/brawler", {
         map: map,
         blueBrawlers: blueBrawlers.filter(b => b !== ""),
         redBrawlers: redBrawlers.filter(b => b !== ""),
@@ -194,7 +194,7 @@ function App() {
         bluesIncluded: bluesIncluded,
       });
 
-      console.log('API Response Received:', response.data);
+      console.log("API Response Received:", response.data);
       const data = response.data || { brawlerStats: [], teamStats: [] };
 
       let brawlerList = data.brawlerStats || [];
@@ -202,14 +202,6 @@ function App() {
 
       const currentRawTeamStats = [];
       const currentRawIndividualStats = [];
-
-      const capitalizeBrawlerName = (name) => {
-        if (!name) return '';
-        return name
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-          .join(' ');
-      };
 
       for (const item of brawlerList) {
         item.brawlerName = capitalizeBrawlerName(item.brawlerName);
@@ -224,26 +216,26 @@ function App() {
             const trimmedPart = part?.trim();
             if (!trimmedPart) continue;
 
-            if (trimmedPart.toUpperCase() === 'VS') {
-              formattedParts.push('VS');
+            if (trimmedPart.toUpperCase() === "VS") {
+              formattedParts.push("VS");
             } else {
               formattedParts.push(capitalizeBrawlerName(trimmedPart));
             }
           }
-          item.brawlerName = formattedParts.join(' ');
+          item.brawlerName = formattedParts.join(" ");
           currentRawTeamStats.push(item);
         }
       }
 
-      console.log('Parsed Raw Individual Stats:', currentRawIndividualStats.length);
-      console.log('Parsed Raw Team Stats:', currentRawTeamStats.length);
+      console.log("Parsed Raw Individual Stats:", currentRawIndividualStats.length);
+      console.log("Parsed Raw Team Stats:", currentRawTeamStats.length);
 
       setRawBrawlerStats(currentRawIndividualStats);
       setRawTeamStats(currentRawTeamStats);
 
     } catch (err) {
-      console.error('Error fetching data:', err);
-      setError(`Failed to fetch data: ${err.message || 'Unknown error'}. Check console.`);
+      console.error("Error fetching data:", err);
+      setError(`Failed to fetch data: ${err.message || "Unknown error"}. Check console.`);
       setRawBrawlerStats([]);
       setRawTeamStats([]);
     } finally {
@@ -260,6 +252,8 @@ function App() {
 
     let processedBrawlerStats = rawBrawlerStats
       .filter(brawler => !activeBans.has(brawler.brawlerName.toUpperCase()))
+      .filter(brawler => !blueBrawlers.includes(brawler.brawlerName.toUpperCase()))
+      .filter(brawler => !redBrawlers.includes(brawler.brawlerName.toUpperCase()))
       .filter(brawler => brawler.matchCount >= filterValue);
 
     let processedTeamStats = rawTeamStats.filter(team => {
@@ -269,18 +263,18 @@ function App() {
       return !isBanned;
     }).filter(team => team.matchCount >= filterValue);
 
-    const sortMultiplier = sortDirection === 'asc' ? 1 : -1;
+    const sortMultiplier = sortDirection === "asc" ? 1 : -1;
 
     const sortFn = (a, b) => {
       let valA = a[sortColumn];
       let valB = b[sortColumn];
 
-      if (valA === undefined || valA === null) valA = sortColumn === 'brawlerName' ? '' : -Infinity;
-      if (valB === undefined || valB === null) valB = sortColumn === 'brawlerName' ? '' : -Infinity;
+      if (valA === undefined || valA === null) valA = sortColumn === "brawlerName" ? "" : -Infinity;
+      if (valB === undefined || valB === null) valB = sortColumn === "brawlerName" ? "" : -Infinity;
 
 
       let comparison = 0;
-      if (sortColumn === 'brawlerName') {
+      if (sortColumn === "brawlerName") {
         comparison = String(valA).localeCompare(String(valB));
       } else {
         const numA = Number(valA);
@@ -297,7 +291,17 @@ function App() {
     setFilteredBrawlerStats(processedBrawlerStats);
     setFilteredTeamStats(processedTeamStats);
 
-  }, [rawBrawlerStats, rawTeamStats, bans, filterValue, sortColumn, sortDirection]);
+  }, [rawBrawlerStats, rawTeamStats, bans, filterValue, sortColumn, sortDirection, blueBrawlers, redBrawlers]);
+
+  function capitalizeBrawlerName(name) {
+    if (!name) return "";
+    if(name === "R-T") return "R-T";
+    if(name === "8-BIT") return "8-Bit";
+    return name
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
 
   function handleBlueChange(selectedOption, index) {
     let newBlueBrawlers = [...blueBrawlers];
@@ -327,24 +331,24 @@ function App() {
 
   function SortIndicator({ direction }) {
     if (!direction) return null;
-    return direction === 'asc' ? ' ▲' : ' ▼';
+    return direction === "asc" ? " ▲" : " ▼";
   };
 
   function handleHeaderClick(column) {
     if (isLoading) return;
 
     if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortColumn(column);
-      setSortDirection(column === 'brawlerName' ? 'asc' : 'desc');
+      setSortDirection(column === "brawlerName" ? "asc" : "desc");
     }
   }
 
   function handleShowClick() {
-    const newShowType = showType === "Brawlers" ? "Teams" : "Brawlers";
-    setSortColumn('matchCount');
-    setSortDirection('desc');
+    const newShowType = showType === "Brawler" ? "Team" : "Brawler";
+    setSortColumn("matchCount");
+    setSortDirection("desc");
     setShowType(newShowType);
   }
 
@@ -353,7 +357,7 @@ function App() {
   }
 
   function handleFilter(event) {
-    const newValue = event.target.value === '' ? 0 : parseInt(event.target.value, 10);
+    const newValue = event.target.value === "" ? 0 : parseInt(event.target.value, 10);
     setFilterValue(isNaN(newValue) ? 0 : newValue);
   }
 
@@ -366,25 +370,21 @@ function App() {
     statusMessage = error;
   }
 
-  const renderTable = (data, type) => {
+  function renderTable(data, type) {
     const isTeam = type === "Teams";
     const columns = [
-      { key: 'brawlerName', label: isTeam ? 'Team Composition' : 'Brawler', align: 'left' },
-      { key: 'winRate', label: 'Win Rate', align: 'right' },
-      { key: 'matchCount', label: 'Battles', align: 'right' },
+      { key: "brawlerName", label: isTeam ? "Team Composition" : "Brawler", align: "left" },
+      { key: "winRate", label: "Win Rate", align: "right" },
+      { key: "matchCount", label: "Battles", align: "right" },
     ];
 
     return (
-      <div className="table-container"> {/* Added for potential horizontal scroll */}
+      <div className="table-container">
         <table className="stats-table">
           <thead>
             <tr>
               {columns.map(col => (
-                <th
-                  key={col.key}
-                  style={{ textAlign: col.align, cursor: 'pointer' }}
-                  onClick={() => handleHeaderClick(col.key)}
-                >
+                <th key={col.key} style={{ textAlign: col.align, cursor: "pointer" }} onClick={() => handleHeaderClick(col.key)}>
                   {col.label}
                   {sortColumn === col.key && <SortIndicator direction={sortDirection} />}
                 </th>
@@ -392,20 +392,39 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => (
-              <tr key={`${item.brawlerName}-${index}`}>
-                <td style={{ textAlign: columns[0].align }}>{item.brawlerName}</td>
-                <td style={{
-                  textAlign: columns[1].align,
-                  color: item.winRate > 0.5 ? '#87CEFA' : item.winRate < 0.5 ? '#FF7F7F' : 'white'
-                }}>
-                  {(item.winRate * 100).toFixed(1)}%
-                </td>
-                <td style={{ textAlign: columns[2].align }}>
-                  {item.matchCount}
-                </td>
-              </tr>
-            ))}
+            {data.map((item, index) => {
+              function getIconPath(name) {
+                if (!name) return null;
+                return `/assets/${name}.png`;
+              };
+
+              function renderBrawlerNameCell() {
+                if (isTeam) {
+                  return item.brawlerName;
+                } else {
+                  const iconSrc = getIconPath(item.brawlerName);
+                  return (
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <span>{item.brawlerName}</span>
+                      <div style={{width:"7px"}}></div>
+                      {iconSrc && (<img src={iconSrc} alt={item.brawlerName} style={{ width: "24px", height: "auto", marginRight: "8px", verticalAlign: "middle" }} onError={(e) => { e.target.style.display = "none"; }}/>)}
+                    </div>
+                  );
+                }
+              };
+
+              return (
+                <tr key={`${item.brawlerName}-${index}`}>
+                  <td style={{ textAlign: columns[0].align }}>{renderBrawlerNameCell()}</td>
+                  <td style={{ textAlign: columns[1].align, color: item.winRate > 0.5 ? "#90EE90" : item.winRate < 0.5 ? "#FF7F7F" : "white" }}>
+                    {(item.winRate * 100).toFixed(1)}%
+                  </td>
+                  <td style={{ textAlign: columns[2].align }}>
+                    {item.matchCount}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -456,7 +475,7 @@ function App() {
             </optgroup>
 
             <optgroup label="Knockout">
-              <option value="Belle's Rock">Belle's Rock</option>
+              <option value="Belle's Rock">Belle"s Rock</option>
               <option value="Flaring Phoenix">Flaring Phoenix</option>
               <option value="New Horizons">New Horizons</option>
               <option value="Out in the Open">Out in the Open</option>
@@ -465,7 +484,7 @@ function App() {
         </div>
 
         <div className="sidebar-section">
-          <h4 className="sidebar-heading" style={{ color: '#87CEFA' }}>Blue Team</h4>
+          <h4 className="sidebar-heading" style={{ color: "#87CEFA" }}>Blue Team</h4>
           {[0, 1].map(index => (
             <Select
               key={`blue-${index}`}
@@ -480,12 +499,23 @@ function App() {
               classNamePrefix="react-select"
               isDisabled={isLoading}
               className="brawler-select"
+              formatOptionLabel={({ value, label }) => (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={`/assets/${capitalizeBrawlerName(value)}b.png`}
+                    alt={label}
+                    style={{ width: "20px", height: "auto", marginRight: "10px" }}
+                    onError={(e) => { e.target.style.display = "none"; }}
+                  />
+                  <span>{label}</span>
+                </div>
+              )}
             />
           ))}
         </div>
 
         <div className="sidebar-section">
-          <h4 className="sidebar-heading" style={{ color: '#FF7F7F' }}>Red Team</h4>
+          <h4 className="sidebar-heading" style={{ color: "#FF7F7F" }}>Red Team</h4>
           {[0, 1, 2].map(index => (
             <Select
               key={`red-${index}`}
@@ -500,12 +530,23 @@ function App() {
               classNamePrefix="react-select"
               isDisabled={isLoading}
               className="brawler-select"
+              formatOptionLabel={({ value, label }) => (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={`/assets/${capitalizeBrawlerName(value)}b.png`}
+                    alt={label}
+                    style={{ width: "20px", height: "auto", marginRight: "10px" }}
+                    onError={(e) => { e.target.style.display = "none"; }}
+                  />
+                  <span>{label}</span>
+                </div>
+              )}
             />
           ))}
         </div>
 
         <div className="sidebar-section">
-          <h4 className="sidebar-heading" style={{ color: '#AAAAAA' }}>Bans</h4>
+          <h4 className="sidebar-heading" style={{ color: "#AAAAAA" }}>Bans</h4>
           {[0, 1, 2, 3, 4, 5].map(index => (
             <Select
               key={`ban-${index}`}
@@ -519,6 +560,17 @@ function App() {
               menuPortalTarget={document.body}
               classNamePrefix="react-select"
               className="brawler-select"
+              formatOptionLabel={({ value, label }) => (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={`/assets/${capitalizeBrawlerName(value)}b.png`}
+                    alt={label}
+                    style={{ width: "20px", height: "auto", marginRight: "10px" }}
+                    onError={(e) => { e.target.style.display = "none"; }}
+                  />
+                  <span>{label}</span>
+                </div>
+              )}
             />
           ))}
         </div>
@@ -538,7 +590,7 @@ function App() {
             onMouseLeave={() => setIsButtonHovered(false)}
             disabled={isLoading}
           >
-            {"Show " + (showType === "Teams" ? "Brawlers" : "Teams")}
+            {"View " + (showType === "Team" ? "Brawler" : "Team") + " Stats"}
           </button>
           <button
             onClick={handleBlueClick}
@@ -548,7 +600,7 @@ function App() {
             onMouseLeave={() => setIsButton2Hovered(false)}
             disabled={isLoading}
           >
-            {bluesIncluded ? "Remove blue brawlers from lookup" : "Add blue brawlers to lookup"}
+            {bluesIncluded ? "Exclude Blue Team from Lookup" : "Include Blue Team in Lookup"}
           </button>
         </div>
 
@@ -584,13 +636,13 @@ function App() {
         </div>
 
         {statusMessage && (
-          <p className={`status-message ${error ? 'error' : ''}`}>
+          <p className={`status-message ${error ? "error" : ""}`}>
             {statusMessage}
           </p>
         )}
 
         <>
-          {showType === "Teams" && (
+          {showType === "Team" && (
             <>
               <h3 className="section-title">Team Statistics</h3>
               {filteredTeamStats.length > 0 ? (
@@ -601,7 +653,7 @@ function App() {
             </>
           )}
 
-          {showType === "Brawlers" && (
+          {showType === "Brawler" && (
             <>
               <h3 className="section-title">
                 {"Individual brawler statistics"}
@@ -635,10 +687,10 @@ function App() {
                 !isLoading && !error && (
                   <p className="no-data-message">
                     No brawler statistics available for the current filters
-                    {filterValue > 0 ? ` >= ${filterValue} battles` : ''}
+                    {filterValue > 0 ? ` >= ${filterValue} battles` : ""}
                     {bans.filter(b => b !== "").length > 0 ?
-                      `, excluding ${bans.filter(b => b !== "").length} ban${bans.filter(b => b !== "").length > 1 ? 's' : ''}` :
-                      ''}
+                      `, excluding ${bans.filter(b => b !== "").length} ban${bans.filter(b => b !== "").length > 1 ? "s" : ""}` :
+                      ""}
                     .
                   </p>
                 )
