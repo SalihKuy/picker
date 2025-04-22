@@ -162,9 +162,12 @@ const customSelectStyles = {
 };
 
 function App() {
-  const [blueBrawlers, setBlueBrawlers] = useState(["", "", ""]);
-  const [redBrawlers, setRedBrawlers] = useState(["", "", ""]);
-  const [bans, setBans] = useState(["", "", "", "", "", ""]);
+  const [blueBrawlers, setBlueBrawlers] = useState([""]);
+  const [blueCount, setBlueCount] = useState([0]);
+  const [redBrawlers, setRedBrawlers] = useState([""]);
+  const [redCount, setRedCount] = useState([0]);
+  const [bans, setBans] = useState([""]);
+  const [banCount, setBanCount] = useState([0]);
   const [map, setMap] = useState("");
   const [rawBrawlerStats, setRawBrawlerStats] = useState([]);
   const [rawTeamStats, setRawTeamStats] = useState([]);
@@ -180,6 +183,7 @@ function App() {
   const [sortDirection, setSortDirection] = useState("desc");
   const [bluesIncluded, setBluesIncluded] = useState(false);
   const [isButton2Hovered, setIsButton2Hovered] = useState(false);
+  const [availableBrawlers, setAvailableBrawlers] = useState(brawlers); 
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -248,6 +252,18 @@ function App() {
   }, [fetchData]);
 
   useEffect(() => {
+    const selectedAndBanned = new Set([
+      ...blueBrawlers.filter(b => b).map(b => b.toUpperCase()),
+      ...redBrawlers.filter(b => b).map(b => b.toUpperCase()),
+      ...bans.filter(b => b).map(b => b.toUpperCase())
+    ]);
+
+    const filteredOptions = brawlers.filter(option => !selectedAndBanned.has(option.value.toUpperCase()));
+    setAvailableBrawlers(filteredOptions);
+
+  }, [blueBrawlers, redBrawlers, bans]); 
+
+  useEffect(() => {
     const activeBans = new Set(bans.filter(b => b !== "").map(b => b.toUpperCase()));
 
     let processedBrawlerStats = rawBrawlerStats
@@ -307,18 +323,42 @@ function App() {
     let newBlueBrawlers = [...blueBrawlers];
     newBlueBrawlers[index] = selectedOption ? selectedOption.value : "";
     setBlueBrawlers(newBlueBrawlers);
+    if(newBlueBrawlers.length === 2) {
+      return;
+    }
+    let tempArr = [];
+    for(let i = 0; i < newBlueBrawlers.length + 1; i++) {
+      tempArr.push(i);
+    }
+    setBlueCount(tempArr);
   };
 
   function handleRedChange(selectedOption, index) {
     let newRedBrawlers = [...redBrawlers];
     newRedBrawlers[index] = selectedOption ? selectedOption.value : "";
     setRedBrawlers(newRedBrawlers);
+    if(newRedBrawlers.length === 3) {
+      return;
+    }
+    let tempArr = [];
+    for(let i = 0; i < newRedBrawlers.length + 1; i++) {
+      tempArr.push(i);
+    }
+    setRedCount(tempArr);
   }
 
   function handleBanChange(selectedOption, index) {
     let newBans = [...bans];
     newBans[index] = selectedOption ? selectedOption.value : "";
     setBans(newBans);
+    if(newBans.length === 6) {
+      return;
+    }
+    let tempArr = [];
+    for(let i = 0; i < newBans.length + 1; i++) {
+      tempArr.push(i);
+    }
+    setBanCount(tempArr);
   }
 
   function handleMapChange(event) {
@@ -485,10 +525,10 @@ function App() {
 
         <div className="sidebar-section">
           <h4 className="sidebar-heading" style={{ color: "#87CEFA" }}>Blue Team</h4>
-          {[0, 1].map(index => (
+          {blueCount.map(index => (
             <Select
               key={`blue-${index}`}
-              options={brawlers}
+              options={availableBrawlers}
               value={findBrawlerOption(blueBrawlers[index])}
               onChange={(selectedOption) => handleBlueChange(selectedOption, index)}
               styles={customSelectStyles}
@@ -516,10 +556,10 @@ function App() {
 
         <div className="sidebar-section">
           <h4 className="sidebar-heading" style={{ color: "#FF7F7F" }}>Red Team</h4>
-          {[0, 1, 2].map(index => (
+          {redCount.map(index => (
             <Select
               key={`red-${index}`}
-              options={brawlers}
+              options={availableBrawlers}
               value={findBrawlerOption(redBrawlers[index])}
               onChange={(selectedOption) => handleRedChange(selectedOption, index)}
               styles={customSelectStyles}
@@ -547,10 +587,10 @@ function App() {
 
         <div className="sidebar-section">
           <h4 className="sidebar-heading" style={{ color: "#AAAAAA" }}>Bans</h4>
-          {[0, 1, 2, 3, 4, 5].map(index => (
+          {banCount.map(index => (
             <Select
               key={`ban-${index}`}
-              options={brawlers}
+              options={availableBrawlers}
               value={findBrawlerOption(bans[index])}
               onChange={(selectedOption) => handleBanChange(selectedOption, index)}
               styles={customSelectStyles}
