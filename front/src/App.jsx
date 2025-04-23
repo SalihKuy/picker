@@ -78,7 +78,7 @@ const brawlers = [
   { value: "PENNY", label: "Penny" },
   { value: "PEARL", label: "Pearl" },
   { value: "PIPER", label: "Piper" },
-  { value: "POCO", label: "Poco" },
+  { value: "POCO", label: "Poco"},
   { value: "R-T", label: "R-T" },
   { value: "RICO", label: "Rico" },
   { value: "ROSA", label: "Rosa" },
@@ -161,6 +161,11 @@ const customSelectStyles = {
   }),
 };
 
+const dateFilterOptions = [
+  { value: "2025-03-27", label: "All Time" },
+  { value: "2025-05-01", label: "Jae-Yong release(May 1)" },
+];
+
 function App() {
   const [blueBrawlers, setBlueBrawlers] = useState([""]);
   const [blueCount, setBlueCount] = useState([0]);
@@ -184,6 +189,7 @@ function App() {
   const [bluesIncluded, setBluesIncluded] = useState(false);
   const [isButton2Hovered, setIsButton2Hovered] = useState(false);
   const [availableBrawlers, setAvailableBrawlers] = useState(brawlers); 
+  const [selectedDateFilter, setSelectedDateFilter] = useState(dateFilterOptions[0].value);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -196,6 +202,7 @@ function App() {
         redBrawlers: redBrawlers.filter(b => b !== ""),
         trophies: rank,
         bluesIncluded: bluesIncluded,
+        dateFilter: selectedDateFilter,
       });
 
       console.log("API Response Received:", response.data);
@@ -245,7 +252,7 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [map, blueBrawlers, redBrawlers, rank, bluesIncluded]);
+  }, [map, blueBrawlers, redBrawlers, rank, bluesIncluded, selectedDateFilter]);
 
   useEffect(() => {
     fetchData();
@@ -367,6 +374,10 @@ function App() {
 
   function handleRankChange(event) {
     setRank(parseInt(event.target.value, 10));
+  }
+
+  function handleDateFilterChange(event) {
+    setSelectedDateFilter(event.target.value);
   }
 
   function SortIndicator({ direction }) {
@@ -628,8 +639,7 @@ function App() {
             style={{ backgroundColor: isButtonHovered ? "#888888" : "#666666" }}
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
-            disabled={isLoading}
-          >
+            disabled={isLoading}>
             {"View " + (showType === "Team" ? "Brawler" : "Team") + " Stats"}
           </button>
           <button
@@ -638,8 +648,7 @@ function App() {
             style={{ backgroundColor: isButton2Hovered ? "#888888" : "#666666" }}
             onMouseEnter={() => setIsButton2Hovered(true)}
             onMouseLeave={() => setIsButton2Hovered(false)}
-            disabled={isLoading}
-          >
+            disabled={isLoading}>
             {bluesIncluded ? "Exclude Blue Team from Lookup" : "Include Blue Team in Lookup"}
           </button>
         </div>
@@ -674,6 +683,23 @@ function App() {
             </select>
           </div>
         </div>
+
+        <div className="control-group">
+            <label htmlFor="dateFilterSelect" className="control-label">Filter Battles Since:</label>
+            <select
+              id="dateFilterSelect"
+              className="control-input select-input"
+              onChange={handleDateFilterChange}
+              value={selectedDateFilter}
+              disabled={isLoading}
+            >
+              {dateFilterOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
         {statusMessage && (
           <p className={`status-message ${error ? "error" : ""}`}>

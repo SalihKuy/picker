@@ -8,13 +8,15 @@ public class BrawlerRequestDTO {
     private List<String> redBrawlers;
     private Integer trophies;
     private boolean bluesIncluded;
+    private String dateFilter;
 
-    public BrawlerRequestDTO(String map, List<String> blueBrawlers, List<String> redBrawlers, int trophies, boolean bluesIncluded) {
+    public BrawlerRequestDTO(String map, List<String> blueBrawlers, List<String> redBrawlers, int trophies, boolean bluesIncluded, String dateFilter) {
         this.map = map;
         this.blueBrawlers = blueBrawlers;
         this.redBrawlers = redBrawlers;
         this.trophies = trophies;
         this.bluesIncluded = bluesIncluded;
+        this.dateFilter = dateFilter;
     }
 
     public String getMap() {
@@ -55,6 +57,14 @@ public class BrawlerRequestDTO {
 
     public void setBluesIncluded(boolean bluesIncluded) {
         this.bluesIncluded = bluesIncluded;
+    }
+
+    public String getDateFilter() {
+        return dateFilter;
+    }
+
+    public void setDateFilter(String dateFilter) {
+        this.dateFilter = dateFilter;
     }
 
     @Override
