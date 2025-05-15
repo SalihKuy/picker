@@ -7,6 +7,9 @@
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/AllStatsDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/ApiResponseDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/BrawlerRequestDTO.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/DoublePlayerDTO.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/LeaderboardRequestDTO.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/PlayerDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/StatsDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/entity/DataEntity.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/repository/DataRepository.java
@@ -17,4 +20,6 @@
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/BrawlerServiceImpl.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/DataService.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/DataServiceImpl.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/PlayerNameService.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/PlayerNameServiceImpl.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/util/FileUtil.java

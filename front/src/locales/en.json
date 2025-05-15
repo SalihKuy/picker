@@ -1,0 +1,157 @@
+{
+    "app": {
+      "sidebar": {
+        "map": {
+          "label": "Map:",
+          "tooltip": "Select a specific map to filter statistics. Choose 'All Maps' for overall data.",
+          "allMapsOption": "All Maps / Select a Map"
+        },
+        "mapGroups": {
+          "bounty": "Bounty",
+          "brawlBall": "Brawl Ball",
+          "gemGrab": "Gem Grab",
+          "heist": "Heist",
+          "knockout": "Knockout",
+          "hotZone": "Hot Zone"
+        },
+        "maps": {
+          "drySeason": "Dry Season",
+          "hideout": "Hideout",
+          "layerCake": "Layer Cake",
+          "shootingStar": "Shooting Star",
+          "centerStage": "Center Stage",
+          "pinballDreams": "Pinball Dreams",
+          "sneakyFields": "Sneaky Fields",
+          "tripleDribble": "Triple Dribble",
+          "dumpsterDrive": "Dumpster Drive",
+          "inTheBins": "In The Bins",
+          "rubbishRampage": "Rubbish Rampage",
+          "wasteHaven": "Waste Haven",
+          "doubleSwoosh": "Double Swoosh",
+          "gemFort": "Gem Fort",
+          "hardRockMine": "Hard Rock Mine",
+          "undermine": "Undermine",
+          "bridgeTooFar": "Bridge Too Far",
+          "hotPotato": "Hot Potato",
+          "kaboomCanyon": "Kaboom Canyon",
+          "safeZone": "Safe Zone",
+          "bellesRock": "Belle's Rock",
+          "flaringPhoenix": "Flaring Phoenix",
+          "newHorizons": "New Horizons",
+          "outInTheOpen": "Out in the Open",
+          "duelingBeetles": "Dueling Beetles",
+          "openBusiness": "Open Business",
+          "parallelPlays": "Parallel Plays",
+          "ringOfFire": "Ring of Fire"
+        },
+        "blueTeam": {
+          "heading": "Blue Team",
+          "tooltip": "Select up to 2 brawlers for your team to see the statistics when you have these brawlers on your team (You need to enable 'Include Blue Team' option for this to work).",
+          "placeholderPrefix": "Blue Brawler "
+        },
+        "redTeam": {
+          "heading": "Red Team",
+          "tooltip": "Select up to 3 brawlers for the opposing team. Statistics will show how brawlers perform against these opponents.",
+          "placeholderPrefix": "Red Brawler "
+        },
+        "bans": {
+          "heading": "Bans",
+          "tooltip": "Select up to 6 brawlers to ban. Banned brawlers will be excluded from the statistics shown.",
+          "placeholderPrefix": "Ban "
+        }
+      },
+      "mainContent": {
+        "viewLeaderboardButton": "View Leaderboard",
+        "viewLeaderboardTooltip": "View the leaderboard to see who played the most battles and who has the highest winrates.",
+        "toggleStatsButton": {
+          "viewTeamStats": "View Team Stats",
+          "viewBrawlerStats": "View Brawler Stats"
+        },
+        "toggleStatsTooltip": "Toggle between viewing brawler statistics or team composition statistics based on your selections.",
+        "blueTeamLookupButton": {
+          "exclude": "Exclude Blue Team",
+          "include": "Include Blue Team"
+        },
+        "blueTeamLookupTooltip": "When enabled, statistics are filtered to battles where your selected blue brawlers are present. This can provide more accurate winrates, but it also severely limits the available data.",
+        "minBattles": {
+          "label": "Min Battles:",
+          "tooltip": "Filter statistics to only include brawlers or teams that have been in at least this many battles.",
+          "placeholder": "Min Battles"
+        },
+        "rankFilter": {
+          "label": "Ignore ranks below:",
+          "tooltip": "Filter statistics to only include data from battles played at or above the selected rank.",
+          "ranks": {
+            "masters1": "Masters I",
+            "masters2": "Masters II",
+            "masters3": "Masters III",
+            "pro": "Pro"
+          }
+        },
+        "dateFilter": {
+          "label": "Filter Battles Since:",
+          "tooltip": "Filter statistics to include battles played since a specific date which often corresponds to balance changes.",
+          "options": {
+            "allTimeApril10": "All Time (April 10)",
+            "balanceChangesApril30": "Balance Changes (April 30)"
+          }
+        },
+        "playerTag": {
+          "label": "Player Tag:",
+          "tooltip": "Enter a player tag to view their overall statistics above Masters I. This only works when blue and red team fields are empty.",
+          "placeholder": "#PlayerTag"
+        },
+        "playerTotalWinRate": "Player Total Winrate: {{winRate}}% ({{matches}} battles)",
+        "status": {
+          "loading": "Loading statistics...",
+          "fetchError": "Failed to fetch data. Check console.",
+          "leaderboardFetchError": "Failed to fetch leaderboard. Check console."
+        },
+        "teamStatisticsTitle": "Team Statistics",
+        "noTeamStatistics": "No team statistics available for the current filters.",
+        "individualBrawlerStatisticsTitle": "Brawler Statistics",
+        "againstClause": " against {{brawlers}}",
+        "withClause": " with {{brawlers}} on your team",
+        "noBrawlerStatistics": "No brawler statistics available for the current filters{{battleFilter}}{{banFilter}}.",
+        "battleFilterClause": " >= {{count}} battles",
+        "banFilterClauseSingle": ", excluding 1 ban",
+        "banFilterClauseMultiple": ", excluding {{count}} bans",
+        "tableHeaders": {
+          "teamComposition": "Team Composition",
+          "brawler": "Brawler",
+          "winRate": "Winrate",
+          "battles": "Battles"
+        }
+      },
+      "leaderboardModal": {
+        "title": "Player Leaderboards",
+        "toggleButton": {
+          "showHighestWinrate": "Show Highest Winrate",
+          "showMostBattles": "Show Most Battles"
+        },
+        "rankFilter": {
+          "label": "Rank:",
+          "tooltip": "Only include battles at this rank and above."
+        },
+        "dateFilter": {
+          "label": "Since:",
+          "tooltip": "Show battles on or after this date. Data before April 30, 2025 is not available."
+        },
+        "minBattlesFilter": {
+          "label": "Min Battles:",
+          "tooltip": "Minimum battles for a player to appear in the Highest Winrate list."
+        },
+        "loading": "Loading leaderboard...",
+        "mostBattlesPlayedTitle": "Most Battles Played",
+        "noData": "No data available for the selected filters.",
+        "playerListItemBattles": "{{rank}}. {{playerName}} - {{playerTag}} - {{wins}} Battles",
+        "playerListItemWinrate": "{{rank}}. {{playerName}} - {{playerTag}} - {{wins}}W / {{losses}}L ({{winrate}} WR)",
+        "highestWinRateTitle": "Highest Winrate (Min {{minGames}} Battles)",
+        "noDataOrMinBattlesNotMet": "No data available for the selected filters (or minimum battles not met).",
+        "fallbacks": {
+            "unknownPlayer": "Unknown",
+            "notAvailable": "N/A"
+        }
+      }
+    }
+  }

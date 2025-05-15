@@ -1,0 +1,153 @@
+{
+    "app": {
+      "sidebar": {
+        "map": {
+          "label": "Harita:",
+          "tooltip": "Belli bir haritanın istatistiklerini görmek için harita seç. Tüm haritaların istatistiklerini görmek için 'Tüm Haritalar' seçeneğini seç.",
+          "allMapsOption": "Tüm Haritalar / Harita Seç"
+        },
+        "mapGroups": {
+          "bounty": "Ödül Avı",
+          "brawlBall": "Savaş Topu",
+          "gemGrab": "Elmas Kapmaca",
+          "heist": "Soygun",
+          "hotZone": "Sıcak Bölge",
+          "knockout": "Nakavt"
+        },
+        "maps": {
+          "drySeason": "Kurak Sezon",
+          "hideout": "Sığınak",
+          "layerCake": "Katmanlı Kek",
+          "shootingStar": "Kayan Yıldız",
+          "centerStage": "Orta Saha",
+          "pinballDreams": "Tilt Alanı",
+          "sneakyFields": "Sinsi Tarla",
+          "tripleDribble": "Top Sürme",
+          "doubleSwoosh": "Çifte Tantana",
+          "gemFort": "Elmas Kale",
+          "hardRockMine": "Taş Madeni",
+          "undermine": "Alt Maden",
+          "bridgeTooFar": "Uzaktaki Köprü",
+          "hotPotato": "Sıcak Patates",
+          "kaboomCanyon": "Bomba Kanyonu",
+          "safeZone": "Güvenli Bölge",
+          "bellesRock": "Belle'in Kayaları",
+          "flaringPhoenix": "Alevli Anka Kuşu",
+          "newHorizons": "Yeni Ufuklar", 
+          "outInTheOpen": "Açıkta",
+          "duelingBeetles": "Savaşan Böcekler",
+          "openBusiness": "Açık Dükkan",
+          "parallelPlays": "Yan Yana Oyun",
+          "ringOfFire": "Ateşten Halka"
+        },
+        "blueTeam": {
+          "heading": "Mavi Takım",
+          "tooltip": "Takımında olan 2 savaşçıyı seçerek yanında bu savaşçılar varken olan istatistikleri görebilirsin. (Kullanabilmek için 'Mavi Takımı Dahil Et' seçeneğini etkinleştir.)",
+          "placeholderPrefix": "Mavi Savaşçı "
+        },
+        "redTeam": {
+          "heading": "Kırmızı Takım",
+          "tooltip": "Rakip takımda olan 3 savaşçıyı seçerek bu rakiplere karşı olan istatistikleri görebilirsin.",
+          "placeholderPrefix": "Kırmızı Savaşçı "
+        },
+        "bans": {
+          "heading": "Banlar",
+          "tooltip": "6 savaşçıyı banlayarak istatistiklerden silebilirsin.",
+          "placeholderPrefix": "Ban "
+        }
+      },
+      "mainContent": {
+        "viewLeaderboardButton": "Liderlik Tablosunu Göster",
+        "viewLeaderboardTooltip": "En çok oynayan ve en çok kazanma oranına sahip olan kişileri görmek için liderlik tablosuna bak.",
+        "toggleStatsButton": {
+          "viewTeamStats": "Takım İstatistiklerini Gör",
+          "viewBrawlerStats": "Savaşçı İstatistiklerini Gör"
+        },
+        "toggleStatsTooltip": "Savaşçı istatistiklerini veya takım istatistiklerini görüntülemek için geçiş yap.",
+        "blueTeamLookupButton": {
+          "exclude": "Mavi Takımı Kaldır",
+          "include": "Mavi Takımı Dahil Et"
+        },
+        "blueTeamLookupTooltip": "Etkinleştirdiğin zaman istatistikler seçtiğin mavi takım savaşçılarının bulunduğu maçlara göre filtrelenir. Kazanma oranları daha doğru olur ama mevcut veriyi azaltır",
+        "minBattles": {
+          "label": "Min Maç Sayısı:",
+          "tooltip": "İstatistikleri en az bu kadar maça katılmış savaşçıları veya takımları içerecek şekilde filtrele.",
+          "placeholder": "Min Maç Sayısı"
+        },
+        "rankFilter": {
+          "label": "Rütbe Filtrele:",
+          "tooltip": "İstatistiklere sadece seçilen rütbede veya üstünde oynanan maçları dahil et.",
+          "ranks": {
+            "masters1": "Ustalar I",
+            "masters2": "Ustalar II",
+            "masters3": "Ustalar III",
+            "pro": "Pro"
+          }
+        },
+        "dateFilter": {
+          "label": "Bu tarihten itibaren:",
+          "tooltip": "Sadece bu tarihten itibaren olan maçları dahil et.",
+          "options": {
+            "allTimeApril10": "Tüm Zamanlar (10 Nisan)",
+            "balanceChangesApril30": "Dengeleme Değişiklikleri (30 Nisan)"
+          }
+        },
+        "playerTag": {
+          "label": "Oyuncu Tagi:",
+          "tooltip": "Ustalar I ve üzeri genel istatistiklerini görmek için oyuncu tagi gir. Ama kırmızı ve mavi takım alanları doluyken çalışmaz😉.",
+          "placeholder": "#OyuncuTagi"
+        },
+        "playerTotalWinRate": "Oyuncu Kazanma Oranı: {{winRate}}% ({{matches}} maç)",
+        "status": {
+          "loading": "İstatistikler Yükleniyor...",
+          "fetchError": "Veri alınamadı. Konsolu kontrol et.",
+          "leaderboardFetchError": "Liderlik tablosu alınamadı. Konsolu kontrol et."
+        },
+        "teamStatisticsTitle": "Takım İstatistikleri",
+        "noTeamStatistics": "Mevcut filtreler için takım istatistiği yok.",
+        "individualBrawlerStatisticsTitle": "Savaşçı İstatistikleri",
+        "againstClause": " karşıda {{brawlers}}",
+        "withClause": "takımında {{brawlers}}",
+        "noBrawlerStatistics": "Mevcut filtreler için savaşçı istatistiği yok{{battleFilter}}{{banFilter}}.",
+        "battleFilterClause": " >= {{count}} maç",
+        "banFilterClauseSingle": ", 1 ban hariç",
+        "banFilterClauseMultiple": ", {{count}} ban hariç",
+        "tableHeaders": {
+          "teamComposition": "Takım Dizilişi",
+          "brawler": "Savaşçı",
+          "winRate": "Kazanma Oranı",
+          "battles": "Maç Sayısı"
+        }
+      },
+      "leaderboardModal": {
+        "title": "Liderlik Tablosu",
+        "toggleButton": {
+          "showHighestWinrate": "En Yüksek Kazanma Oranı",  
+          "showMostBattles": "En Çok Maç Oynayan"
+        },
+        "rankFilter": {
+          "label": "Rütbe:",
+          "tooltip": "Sadece bu rütbede ve üstünde olan maçları dahil et."
+        },
+        "dateFilter": {
+          "label": "Bu tarihten itibaren:",
+          "tooltip": "Bu tarihten itibaren olan maçları göster. 30 Nisan 2025'ten önceki veriler yok maalesef."
+        },
+        "minBattlesFilter": {
+          "label": "Min Maç Sayısı:",
+          "tooltip": "Sadece en az bu kadar maç oynamış oyuncuları dahil et."
+        },
+        "loading": "Liderlik Tablosu Yükleniyor...",
+        "mostBattlesPlayedTitle": "En Çok Maç Oynayan",
+        "noData": "Mevcut filtreler için veri yok.",
+        "playerListItemBattles": "{{rank}}. {{playerName}} - {{playerTag}} - {{wins}} Maç",
+        "playerListItemWinrate": "{{rank}}. {{playerName}} - {{playerTag}} - {{wins}}G / {{losses}}Y ({{winrate}} KO)",
+        "highestWinRateTitle": "En Yüksek Kazanma Oranı (Min {{minGames}} Maç)",
+        "noDataOrMinBattlesNotMet": "Mevcut filtreler için veri yok (veya minimum maç sayısı fazla yüksek).",
+        "fallbacks": {
+            "unknownPlayer": "Bilinmeyen Oyuncu",
+            "notAvailable": "N/A"
+        }
+      }
+    }
+  }

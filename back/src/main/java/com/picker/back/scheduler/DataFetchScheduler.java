@@ -109,7 +109,7 @@ public class DataFetchScheduler {
                         if (player.getBrawler().getTrophies() > highestTrophies) {
                             highestTrophies = player.getBrawler().getTrophies();
                         }
-                        if (player.getBrawler().getTrophies() > 19) {
+                        if (player.getBrawler().getTrophies() > 18) {
                             battleTags.add(player.getTag());
                         }
                         if (player.getTag().equalsIgnoreCase(playerTag)) {
@@ -121,11 +121,11 @@ public class DataFetchScheduler {
                         if (player.getBrawler().getTrophies() > highestTrophies) {
                             highestTrophies = player.getBrawler().getTrophies();
                         }
-                        if (player.getBrawler().getTrophies() > 19) {
+                        if (player.getBrawler().getTrophies() > 18) {
                             battleTags.add(player.getTag());
                         }
                     }
-                    if(highestTrophies > 22) {
+                    if(highestTrophies > 22 || highestTrophies < 18) {
                         return;
                     }
                     if (playerOnTeam2) {
@@ -189,7 +189,12 @@ public class DataFetchScheduler {
                                 isTwoOhMatch,
                                 battleTime,
                                 highestTrophies,
-                                playerTag);
+                                winningTeam.get(0).getTag(),
+                                winningTeam.get(1).getTag(),
+                                winningTeam.get(2).getTag(),
+                                losingTeam.get(0).getTag(),
+                                losingTeam.get(1).getTag(),
+                                losingTeam.get(2).getTag());
                         dataService.saveData(dataEntity);
                         logger.info("Data saved for match ending {}. PlayerTag: {}, isTwoOh: {}", battleTime, playerTag,
                                 isTwoOhMatch);

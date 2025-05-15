@@ -20,7 +20,8 @@
     {
       "name": "api.external.max-retries",
       "type": "java.lang.Integer",
-      "sourceType": "com.picker.back.config.ApiProperties"
+      "sourceType": "com.picker.back.config.ApiProperties",
+      "defaultValue": 3
     }
   ],
   "hints": []

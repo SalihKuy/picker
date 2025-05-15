@@ -9,14 +9,17 @@ public class BrawlerRequestDTO {
     private Integer trophies;
     private boolean bluesIncluded;
     private String dateFilter;
+    private String playerTag;
 
-    public BrawlerRequestDTO(String map, List<String> blueBrawlers, List<String> redBrawlers, int trophies, boolean bluesIncluded, String dateFilter) {
+    public BrawlerRequestDTO(String map, List<String> blueBrawlers, List<String> redBrawlers, int trophies, boolean bluesIncluded, String dateFilter, String playerTag) {
         this.map = map;
         this.blueBrawlers = blueBrawlers;
         this.redBrawlers = redBrawlers;
         this.trophies = trophies;
         this.bluesIncluded = bluesIncluded;
         this.dateFilter = dateFilter;
+        this.playerTag = playerTag;
+
     }
 
     public String getMap() {
@@ -65,6 +68,14 @@ public class BrawlerRequestDTO {
 
     public void setDateFilter(String dateFilter) {
         this.dateFilter = dateFilter;
+    }
+
+    public String getPlayerTag() {
+        return playerTag;
+    }
+
+    public void setPlayerTag(String playerTag) {
+        this.playerTag = playerTag;
     }
 
     @Override
