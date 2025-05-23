@@ -7,9 +7,10 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Service;
 import static java.lang.Integer.parseInt;
 
@@ -19,7 +20,9 @@ import com.picker.back.model.dto.DoublePlayerDTO;
 import com.picker.back.model.dto.PlayerDTO;
 import com.picker.back.model.dto.StatsDTO;
 import com.picker.back.model.entity.DataEntity;
+import com.picker.back.model.entity.PlayerNameCacheEntry;
 import com.picker.back.repository.DataRepository;
+import com.picker.back.repository.PlayerNameCacheRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +31,13 @@ import org.slf4j.LoggerFactory;
 public class BrawlerServiceImpl implements BrawlerService {
 
     private DataRepository dataRepository;
+    private PlayerNameCacheRepository playerNameCacheRepository;
     private PlayerNameService playerNameService;
     private static final Logger logger = LoggerFactory.getLogger(BrawlerServiceImpl.class);
 
-    private final Map<String, String> playerTagToNameCache = new ConcurrentHashMap<>();
-
-    public BrawlerServiceImpl(DataRepository dataRepository, PlayerNameService playerNameService) {
+    public BrawlerServiceImpl(DataRepository dataRepository, PlayerNameCacheRepository playerNameCacheRepository, PlayerNameService playerNameService) {
         this.dataRepository = dataRepository;
+        this.playerNameCacheRepository = playerNameCacheRepository;
         this.playerNameService = playerNameService;
         logger.info("BrawlerServiceImpl initialized");
     }
@@ -1039,15 +1042,41 @@ public class BrawlerServiceImpl implements BrawlerService {
 
     private String getCachedPlayerName(String playerTag) {
         if (playerTag == null || playerTag.isEmpty()) {
-            return null; 
+            return null;
         }
-        String name = playerTagToNameCache.get(playerTag);
-        if (name == null) {
-            name = playerNameService.getPlayerNameByTag(playerTag);
-            if (name != null) {
-                playerTagToNameCache.put(playerTag, name);
+
+        Optional<PlayerNameCacheEntry> cachedEntryOptional = playerNameCacheRepository.findById(playerTag);
+
+        if (cachedEntryOptional.isPresent()) {
+            PlayerNameCacheEntry cachedEntry = cachedEntryOptional.get();
+            if (cachedEntry.getLastFetched() == null ||
+                    cachedEntry.getLastFetched()
+                            .isBefore(OffsetDateTime.now().minus(7, ChronoUnit.DAYS))) {
+                logger.info("Cached name for tag {} is stale or has no update timestamp. Refreshing.", playerTag);
+                String freshName = playerNameService.getPlayerNameByTag(playerTag);
+                if (freshName != null) {
+                    if (!freshName.equals(cachedEntry.getPlayerName())) {
+                        logger.info("Player name for tag {} changed from {} to {}. Updating cache.", playerTag,
+                                cachedEntry.getPlayerName(), freshName);
+                    }
+                    cachedEntry.updateName(freshName);
+                    playerNameCacheRepository.save(cachedEntry);
+                    return freshName;
+                } else {
+                    logger.warn("Failed to refresh player name for tag {}. Returning stale name.", playerTag);
+                    return cachedEntry.getPlayerName();
+                }
             }
+            return cachedEntry.getPlayerName();
+        } else {
+            logger.debug("Player name for tag {} not in cache. Fetching.", playerTag);
+            String name = playerNameService.getPlayerNameByTag(playerTag);
+            if (name != null) {
+                PlayerNameCacheEntry newEntry = new PlayerNameCacheEntry(playerTag, name);
+                playerNameCacheRepository.save(newEntry);
+                logger.info("Cached new player name for tag {}: {}", playerTag, name);
+            }
+            return name;
         }
-        return name;
     }
 }

@@ -1,4 +1,5 @@
 com/picker/back/service/ApiService.class
+com/picker/back/repository/PlayerNameCacheRepository.class
 com/picker/back/service/DataService.class
 com/picker/back/config/SchedulerConfig.class
 com/picker/back/util/FileUtil.class
@@ -11,6 +12,7 @@ com/picker/back/service/PlayerNameServiceImpl.class
 com/picker/back/model/dto/PlayerDTO.class
 com/picker/back/config/ApiProperties.class
 com/picker/back/model/dto/DoublePlayerDTO.class
+com/picker/back/model/entity/PlayerNameCacheEntry.class
 com/picker/back/model/dto/ApiResponseDTO.class
 META-INF/spring-configuration-metadata.json
 com/picker/back/config/ApiConfig.class

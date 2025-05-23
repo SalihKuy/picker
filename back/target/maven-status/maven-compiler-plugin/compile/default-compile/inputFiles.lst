@@ -12,7 +12,9 @@
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/PlayerDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/StatsDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/entity/DataEntity.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/entity/PlayerNameCacheEntry.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/repository/DataRepository.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/repository/PlayerNameCacheRepository.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/scheduler/DataFetchScheduler.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/ApiService.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/ApiServiceImpl.java

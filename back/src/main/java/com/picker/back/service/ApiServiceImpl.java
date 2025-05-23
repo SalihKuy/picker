@@ -51,10 +51,14 @@ public class ApiServiceImpl implements ApiService {
 
             return objectMapper.readValue(response.getBody(), ApiResponseDTO.class);
         } catch (RestClientException e) {
-            logger.error("Error occurred while calling API: {}", e.getMessage());
+            logger.error("Error occurred while calling API for playerTag {}: {}", playerTag, e.getMessage());
+            if (e.getMessage() != null && e.getMessage().contains("selector manager closed")) {
+                logger.error("Critical API error: 'selector manager closed' detected for playerTag {}. Initiating application shutdown to allow for restart.", playerTag, e);
+                System.exit(1);
+            }
             return new ApiResponseDTO();
         } catch (Exception e) {
-            logger.error("Unexpected error: {}", e.getMessage());
+            logger.error("Unexpected error for playerTag {}: {}", playerTag, e.getMessage(), e);
             return new ApiResponseDTO();
         }
     }
