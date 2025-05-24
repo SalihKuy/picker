@@ -12,8 +12,12 @@
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/PlayerDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/dto/StatsDTO.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/entity/DataEntity.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/entity/LegendaryIdEntity.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/entity/MastersIdEntity.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/model/entity/PlayerNameCacheEntry.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/repository/DataRepository.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/repository/LegendaryIdRepository.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/repository/MastersIdRepository.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/repository/PlayerNameCacheRepository.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/scheduler/DataFetchScheduler.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/ApiService.java
@@ -22,6 +26,8 @@
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/BrawlerServiceImpl.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/DataService.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/DataServiceImpl.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/PlayerIdManagementService.java
+/Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/PlayerIdManagementServiceImpl.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/PlayerNameService.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/service/PlayerNameServiceImpl.java
 /Users/cannx/Downloads/picker/back/src/main/java/com/picker/back/util/FileUtil.java

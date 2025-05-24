@@ -9,10 +9,14 @@ import com.picker.back.model.dto.ApiResponseDTO;
 import com.picker.back.model.dto.ApiResponseDTO.Item;
 import com.picker.back.model.dto.ApiResponseDTO.Player;
 import com.picker.back.model.entity.DataEntity;
+import com.picker.back.model.entity.LegendaryIdEntity;
+import com.picker.back.model.entity.MastersIdEntity;
 import com.picker.back.repository.DataRepository;
+import com.picker.back.repository.LegendaryIdRepository;
+import com.picker.back.repository.MastersIdRepository;
 import com.picker.back.service.ApiService;
 import com.picker.back.service.DataService;
-import com.picker.back.util.FileUtil;
+import com.picker.back.service.PlayerIdManagementService;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,14 +36,22 @@ public class DataFetchScheduler {
 
     private final ApiService apiService;
     private final DataService dataService;
+    private final PlayerIdManagementService playerIdManagementService;
     private final DataRepository dataRepository;
+    private final LegendaryIdRepository legendaryIdRepository;
+    private final MastersIdRepository mastersIdRepository;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private boolean start = true; // debug variable
 
-    public DataFetchScheduler(ApiService apiService, DataService dataService, DataRepository dataRepository) {
+    public DataFetchScheduler(ApiService apiService, DataService dataService, DataRepository dataRepository,
+            LegendaryIdRepository legendaryIdRepository, MastersIdRepository mastersIdRepository,
+            PlayerIdManagementService playerIdManagementService) {
         this.apiService = apiService;
         this.dataService = dataService;
         this.dataRepository = dataRepository;
+        this.legendaryIdRepository = legendaryIdRepository;
+        this.mastersIdRepository = mastersIdRepository;
+        this.playerIdManagementService = playerIdManagementService;
     }
 
     @Scheduled(fixedRateString = "${scheduler.fixedRate}", initialDelayString = "${scheduler.initialDelay}")
@@ -50,17 +62,33 @@ public class DataFetchScheduler {
         logger.info("Scheduled task started");
 
         try {
-            List<String> playerTags = FileUtil.readPlayerTagsFromFile("ids.txt");
+            List<String> legendaryPlayerTags = legendaryIdRepository.findAll()
+                    .stream()
+                    .map(LegendaryIdEntity::getPlayerTag)
+                    .collect(Collectors.toList());
+
+            List<String> mastersPlayerTags = mastersIdRepository.findAll()
+                    .stream()
+                    .map(MastersIdEntity::getPlayerTag)
+                    .collect(Collectors.toList());
+
+            Set<String> combinedPlayerTagsSet = new HashSet<>(legendaryPlayerTags);
+            combinedPlayerTagsSet.addAll(mastersPlayerTags);
+            List<String> playerTags = new ArrayList<>(combinedPlayerTagsSet);
+
             if (!playerTags.isEmpty()) {
+                logger.info("Found {} player tags from repositories to process.", playerTags.size());
                 fetchDataAndSave(playerTags.get(0));
                 for (int i = 1; i < playerTags.size(); i++) {
                     String playerTag = playerTags.get(i);
-                    scheduler.schedule(() -> fetchDataAndSave(playerTag), (1000000 / playerTags.size()) * (long) i,
-                            TimeUnit.MILLISECONDS);
+                    long delay = (3600000L / playerTags.size()) * i;
+                    scheduler.schedule(() -> fetchDataAndSave(playerTag), delay, TimeUnit.MILLISECONDS);
                 }
+            } else {
+                logger.info("No player tags found in repositories to process.");
             }
         } catch (Exception e) {
-            logger.error("Error reading player tags from file", e);
+            logger.error("Error fetching player tags from repositories or scheduling tasks", e);
         }
     }
 
@@ -104,13 +132,16 @@ public class DataFetchScheduler {
                     Integer highestTrophies = 0;
                     boolean playerOnTeam2 = false;
                     List<String> battleTags = new ArrayList<>();
-                    
+                    List<String> battleTags2 = new ArrayList<>();
+
                     for (Player player : teams.get(1)) {
                         if (player.getBrawler().getTrophies() > highestTrophies) {
                             highestTrophies = player.getBrawler().getTrophies();
                         }
-                        if (player.getBrawler().getTrophies() > 18) {
+                        if (player.getBrawler().getTrophies() > 18 && player.getBrawler().getTrophies() < 23) {
                             battleTags.add(player.getTag());
+                        } else if (player.getBrawler().getTrophies() > 15 && player.getBrawler().getTrophies() < 23) {
+                            battleTags2.add(player.getTag());
                         }
                         if (player.getTag().equalsIgnoreCase(playerTag)) {
                             playerOnTeam2 = true;
@@ -121,11 +152,13 @@ public class DataFetchScheduler {
                         if (player.getBrawler().getTrophies() > highestTrophies) {
                             highestTrophies = player.getBrawler().getTrophies();
                         }
-                        if (player.getBrawler().getTrophies() > 18) {
+                        if (player.getBrawler().getTrophies() > 18 && player.getBrawler().getTrophies() < 23) {
                             battleTags.add(player.getTag());
+                        } else if (player.getBrawler().getTrophies() > 15 && player.getBrawler().getTrophies() < 23) {
+                            battleTags2.add(player.getTag());
                         }
                     }
-                    if(highestTrophies > 22 || highestTrophies < 18) {
+                    if (highestTrophies > 22 || highestTrophies < 16) {
                         return;
                     }
                     if (playerOnTeam2) {
@@ -136,30 +169,16 @@ public class DataFetchScheduler {
                     }
 
                     try {
-                        List<String> originalTags = FileUtil.readPlayerTagsFromFile("ids.txt");
-                        List<String> extraTags = FileUtil.readPlayerTagsFromFile("extraIds.txt");
-
-                        Set<String> allExistingTagsLowerCase = new HashSet<>();
-                        originalTags.forEach(tag -> allExistingTagsLowerCase.add(tag.toLowerCase()));
-                        extraTags.forEach(tag -> allExistingTagsLowerCase.add(tag.toLowerCase()));
-
-                        List<String> newTags = battleTags.stream()
-                                .filter(tag -> tag != null && !tag.trim().isEmpty())
-                                .map(String::toLowerCase)
-                                .filter(tagLower -> !allExistingTagsLowerCase.contains(tagLower))
-                                .distinct()
-                                .collect(Collectors.toList());
-
-                        Set<String> newTagsLowerSet = new HashSet<>(newTags);
-                        List<String> finalNewTags = battleTags.stream()
-                                .filter(tag -> tag != null && newTagsLowerSet.contains(tag.toLowerCase()))
-                                .distinct()
-                                .collect(Collectors.toList());
-
-                        if (!finalNewTags.isEmpty()) {
-                            logger.info("Found {} new player tags to add to extraIds.txt", finalNewTags.size());
-                            FileUtil.appendPlayerTagsToFile("extraIds.txt", finalNewTags);
-                        }
+                        battleTags.forEach(tag -> {
+                            logger.info("Managing player tag: {}", tag);
+                            playerIdManagementService.managePlayerId(tag, true);
+                            logger.info("Player tag {} managed successfully", tag);
+                        });
+                        battleTags2.forEach(tag -> {
+                            logger.info("Managing player tag: {}", tag);
+                            playerIdManagementService.managePlayerId(tag, false);
+                            logger.info("Player tag {} managed successfully", tag);
+                        });
                     } catch (Exception e) {
                         logger.error("Error processing player tags for battle at {}", battleTime, e);
                     }

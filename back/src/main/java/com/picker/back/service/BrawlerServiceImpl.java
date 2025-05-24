@@ -973,20 +973,24 @@ public class BrawlerServiceImpl implements BrawlerService {
             logger.info("Top winrates count after filtering by minBattles({}): {}", minBattles,
                     processedWinrates.size());
         }
-        stats.topWinrates = processedWinrates.stream().limit(10).collect(Collectors.toList());
+        if(minBattles != null && minBattles > 0) {
+            stats.topWinrates = processedWinrates.stream().limit(10).collect(Collectors.toList());
+            stats.topWinrates.stream()
+                    .forEach(player -> {
+                        String playerTag = player.getPlayerTag();
+                        String name = getCachedPlayerName(playerTag);
+                        player.setPlayerName(name);
+                        logger.info("Player name for tag {}: {}", playerTag, name);
+                    });
+            logger.info("Top winrates count after limiting to 10: {}", stats.topWinrates.size());
+        }
         stats.topBattles.stream()
                 .forEach(player -> {
                     String playerTag = player.getPlayerTag();
                     String name = getCachedPlayerName(playerTag);
                     player.setPlayerName(name);
+                    logger.info("Player name for tag {}: {}", playerTag, name);
                 });
-        stats.topWinrates.stream()
-                .forEach(player -> {
-                    String playerTag = player.getPlayerTag();
-                    String name = getCachedPlayerName(playerTag);
-                    player.setPlayerName(name);
-                });
-        logger.info("Top winrates count after limiting to 10: {}", stats.topWinrates.size());
 
         return stats;
     }
