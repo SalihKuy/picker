@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 public class FileUtil {
 
@@ -31,21 +33,43 @@ public class FileUtil {
         return playerTags;
     }
 
-    public static void appendPlayerTagsToFile(String filename, List<String> tags) throws IOException {
-        if (tags == null || tags.isEmpty()) {
+
+    public static void appendPlayerTagsToFile(String filename, List<String> newTags) throws IOException {
+        if (newTags == null || newTags.isEmpty()) {
             return;
         }
 
         Path filePath = Paths.get(filename);
+        Set<String> existingTags = new HashSet<>();
 
-        try (BufferedWriter writer = Files.newBufferedWriter(filePath,
-                StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE,
-                StandardOpenOption.APPEND)) {
+        if (Files.exists(filePath)) {
+            try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    existingTags.add(line.trim());
+                }
+            }
+        }
 
-            for (String tag : tags) {
-                writer.write(tag);
-                writer.newLine();
+        List<String> tagsToAppend = new ArrayList<>();
+        for (String tag : newTags) {
+            String trimmedTag = tag.trim();
+            if (!trimmedTag.isEmpty() && !existingTags.contains(trimmedTag)) {
+                tagsToAppend.add(trimmedTag);
+                existingTags.add(trimmedTag);
+            }
+        }
+
+        if (!tagsToAppend.isEmpty()) {
+            try (BufferedWriter writer = Files.newBufferedWriter(filePath,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE, 
+                    StandardOpenOption.APPEND)) {
+
+                for (String tag : tagsToAppend) {
+                    writer.write(tag);
+                    writer.newLine();
+                }
             }
         }
     }
